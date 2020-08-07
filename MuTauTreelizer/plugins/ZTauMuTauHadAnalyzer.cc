@@ -99,6 +99,9 @@ class ZTauMuTauHadAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResourc
       vector<float> recoMuonDZ;
       vector<int> recoMuonNTrackerLayers;
       vector<int> recoMuonTriggerFlag;
+      vector<int> recoMuonIdLoose;
+      vector<int> recoMuonIdMedium;
+      vector<int> recoMuonIdTight;
 
       // --- reconstructed taus ---
       vector<float> recoTauPt;
@@ -424,6 +427,15 @@ ZTauMuTauHadAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
        recoMuonDZ.push_back(iMuon->muonBestTrack()->dz());
        recoMuonNTrackerLayers.push_back(iMuon->innerTrack()->hitPattern().trackerLayersWithMeasurement());
 
+       bool goodGlob = iMuon->isGlobalMuon() && iMuon->globalTrack()->normalizedChi2() < 3 && iMuon->combinedQuality().chi2LocalPosition < 12 && iMuon->combinedQuality().trkKink < 20;
+       int isMedium = muon::isLooseMuon(*iMuon) && iMuon->innerTrack()->validFraction() > 0.8 && muon::segmentCompatibility(*iMuon) > (goodGlob ? 0.303 : 0.451);
+       int isLoose = iMuon->isPFMuon() && (iMuon->isGlobalMuon() || iMuon->isTrackerMuon());
+       int isTight = iMuon->isGlobalMuon() && iMuon->isPFMuon() && iMuon->globalTrack()->normalizedChi2() < 10 && iMuon->globalTrack()->hitPattern().numberOfValidMuonHits() > 0 && iMuon->numberOfMatchedStations() > 1 && fabs(iMuon->muonBestTrack()->dxy()) < 0.2 && fabs(iMuon->muonBestTrack()->dz()) < 0.5 && iMuon->innerTrack()->hitPattern().numberOfValidPixelHits() > 0 && iMuon->innerTrack()->hitPattern().trackerLayersWithMeasurement() > 5;
+
+       recoMuonIdLoose.push_back(isLoose);
+       recoMuonIdMedium.push_back(isMedium);
+       recoMuonIdTight.push_back(isTight);
+
        if (muonCounter == 0)
        {
            recoMuonTriggerFlag.push_back(1);
@@ -546,6 +558,9 @@ ZTauMuTauHadAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
    recoMuonDZ.clear();
    recoMuonNTrackerLayers.clear();
    recoMuonTriggerFlag.clear();
+   recoMuonIdLoose.clear();
+   recoMuonIdMedium.clear();
+   recoMuonIdTight.clear();
 
    // --- reconstructed taus ---
    recoTauPt.clear();
@@ -784,6 +799,9 @@ ZTauMuTauHadAnalyzer::beginJob()
     objectTree->Branch("recoMuonDZ", &recoMuonDZ);
     objectTree->Branch("recoMuonNTrackerLayers", &recoMuonNTrackerLayers);
     objectTree->Branch("recoMuonTriggerFlag", &recoMuonTriggerFlag);
+    objectTree->Branch("recoMuonIdLoose", &recoMuonIdLoose);
+    objectTree->Branch("recoMuonIdMedium", &recoMuonIdMedium);
+    objectTree->Branch("recoMuonIdTight", &recoMuonIdTight);
 
     objectTree->Branch("recoTauPt", &recoTauPt);
     objectTree->Branch("recoTauEta", &recoTauEta);

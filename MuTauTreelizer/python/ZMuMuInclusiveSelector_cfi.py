@@ -43,10 +43,10 @@ ElectronCandSelector = cms.EDFilter("ElectronCandSelector",
         rhoTag = cms.InputTag("fixedGridRhoAll"),
         effAreasConfigFile = cms.FileInPath("MuMuTauTauTreeMaker/MuTauTreelizer/data/effAreaElectrons_cone03_pfNeuHadronsAndPhotons_94X.txt"),
         # ========================================================================
-        relIdName = cms.string("Loose"), # customize electron ID options: Veto, Loose, Medium, Tight
+        relIdName = cms.string("veto"), # customize electron ID options: Veto, Loose, Medium, Tight
         passRelIso = cms.bool(False),
         etaCut = cms.double(2.5),
-        ptCut = cms.double(7.0),
+        ptCut = cms.double(3.0),
 )
 
 TauCandSelector = cms.EDFilter("TauCandSelector",

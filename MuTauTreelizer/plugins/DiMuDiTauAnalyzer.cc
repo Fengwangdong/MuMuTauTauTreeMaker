@@ -108,6 +108,9 @@ class DiMuDiTauAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>
       vector<int> recoMuonTriggerFlag;
       vector<int> recoMuonRefToElectron;
       vector<int> recoMuonRefToTau;
+      vector<int> recoMuonIdLoose;
+      vector<int> recoMuonIdMedium;
+      vector<int> recoMuonIdTight;
 
       // --- reconstructed electrons ---
       vector<float> recoElectronPt;
@@ -536,6 +539,15 @@ DiMuDiTauAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
            recoMuonRefToElectron.push_back(0);
            recoMuonRefToTau.push_back(0);
 
+           bool goodGlob = iMuon->isGlobalMuon() && iMuon->globalTrack()->normalizedChi2() < 3 && iMuon->combinedQuality().chi2LocalPosition < 12 && iMuon->combinedQuality().trkKink < 20;
+           int isMedium = muon::isLooseMuon(*iMuon) && iMuon->innerTrack()->validFraction() > 0.8 && muon::segmentCompatibility(*iMuon) > (goodGlob ? 0.303 : 0.451);
+           int isLoose = iMuon->isPFMuon() && (iMuon->isGlobalMuon() || iMuon->isTrackerMuon());
+           int isTight = iMuon->isGlobalMuon() && iMuon->isPFMuon() && iMuon->globalTrack()->normalizedChi2() < 10 && iMuon->globalTrack()->hitPattern().numberOfValidMuonHits() > 0 && iMuon->numberOfMatchedStations() > 1 && fabs(iMuon->muonBestTrack()->dxy()) < 0.2 && fabs(iMuon->muonBestTrack()->dz()) < 0.5 && iMuon->innerTrack()->hitPattern().numberOfValidPixelHits() > 0 && iMuon->innerTrack()->hitPattern().trackerLayersWithMeasurement() > 5;
+
+           recoMuonIdLoose.push_back(isLoose);
+           recoMuonIdMedium.push_back(isMedium);
+           recoMuonIdTight.push_back(isTight);
+
            if (muonCounter == 0)
            {
                recoMuonTriggerFlag.push_back(1);
@@ -922,6 +934,9 @@ DiMuDiTauAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
    recoMuonTriggerFlag.clear();
    recoMuonRefToElectron.clear();
    recoMuonRefToTau.clear();
+   recoMuonIdLoose.clear();
+   recoMuonIdMedium.clear();
+   recoMuonIdTight.clear();
 
    // --- reconstructed electrons ---
    recoElectronPt.clear();
@@ -1200,6 +1215,9 @@ DiMuDiTauAnalyzer::beginJob()
     objectTree->Branch("recoMuonTriggerFlag", &recoMuonTriggerFlag);
     objectTree->Branch("recoMuonRefToElectron", &recoMuonRefToElectron);
     objectTree->Branch("recoMuonRefToTau", &recoMuonRefToTau);
+    objectTree->Branch("recoMuonIdLoose", &recoMuonIdLoose);
+    objectTree->Branch("recoMuonIdMedium", &recoMuonIdMedium);
+    objectTree->Branch("recoMuonIdTight", &recoMuonIdTight);
 
     objectTree->Branch("recoElectronPt", &recoElectronPt);
     objectTree->Branch("recoElectronEta", &recoElectronEta);
