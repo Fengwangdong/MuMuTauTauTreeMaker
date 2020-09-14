@@ -901,7 +901,8 @@ DiMuDiTauAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
            recoJetEnergy.push_back(iJet->energy());
            // --- btag for jet ---
            // reference: https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookMiniAOD2017#Jets
-           recoJetCSV.push_back(iJet->bDiscriminator("pfCombinedSecondaryVertexV2BJetTags"));
+           // https://twiki.cern.ch/twiki/bin/viewauth/CMS/BtagRecommendation80XReReco#Supported_Algorithms_and_Operati
+           recoJetCSV.push_back(iJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags"));
        } // end for loop on jets
    } // end if pJet->size()>0
 
