@@ -121,9 +121,9 @@ bool TauCandSelector::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
            if (iTau->tauID(tauDiscriminatorTag_[i])>0.5) passIso = true;
        } // end for loop on tau discriminator
 
-       if (((passIso && passDiscriminator_) || (!passIso && !passDiscriminator_)) && 
-          ((etaMax_ == -1.0) || (fabs((iTau)->eta()) < etaMax_)) &&
-          ((pTMin_ == -1.0)  || ((iTau)->pt() > pTMin_)))
+       if (((passIso && passDiscriminator_) || (!passDiscriminator_)) && 
+          ((etaMax_ == -1.0) || (fabs(iTau->eta()) < etaMax_)) &&
+          ((pTMin_ == -1.0)  || (iTau->pt() > pTMin_)))
        {
            tauColl->push_back(*iTau);
            CountTau++;

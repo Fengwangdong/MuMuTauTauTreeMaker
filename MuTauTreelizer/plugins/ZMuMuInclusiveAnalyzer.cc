@@ -122,6 +122,9 @@ class ZMuMuInclusiveAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResou
       vector<int> recoElectronIdLoose;
       vector<int> recoElectronIdMedium;
       vector<int> recoElectronIdTight;
+      vector<int> recoElectronIdLooseNoIso;
+      vector<int> recoElectronIdMediumNoIso;
+      vector<int> recoElectronIdTightNoIso;
       vector<float> recoElectronEcalTrkEnergyPostCorr;
       vector<float> recoElectronEcalTrkEnergyErrPostCorr;
       vector<int> recoElectronRefToMuon;
@@ -134,6 +137,8 @@ class ZMuMuInclusiveAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResou
       vector<float> recoTauEnergy;
       vector<int> recoTauPDGId;
       vector<float> recoTauDecayMode;
+      vector<float> recoTauDecayModeFinding;
+      vector<float> recoTauDecayModeFindingNewDMs;
       vector<float> recoTauIsoMVArawValue;
       vector<float> recoTauIsoMVAVVLoose;
       vector<float> recoTauIsoMVAVLoose;
@@ -570,6 +575,10 @@ ZMuMuInclusiveAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
            int isMedium = 0;
            int isTight = 0;
 
+           int isLooseNoIso = 0;
+           int isMediumNoIso = 0;
+           int isTightNoIso = 0;
+
            // ---  full5x5_sigmaIetaIeta ---
            float sigmaIetaIeta = iElectron->full5x5_sigmaIetaIeta();
 
@@ -631,6 +640,30 @@ ZMuMuInclusiveAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
                          (eInverseMinusPInverse < 0.159) &&
                          (mHits <= 1) &&
                          (isPassConVeto == true);
+
+               isLooseNoIso = (sigmaIetaIeta < 0.0112) &&
+                         (dEtaSeed < 0.00377) &&
+                         (dPhiIn < 0.0884) &&
+                         (HoE < 0.05 + 1.16/energy + 0.0324*rho/energy) &&
+                         (eInverseMinusPInverse < 0.193) &&
+                         (mHits <= 1) &&
+                         (isPassConVeto == true);
+
+               isMediumNoIso = (sigmaIetaIeta < 0.0106) &&
+                          (dEtaSeed < 0.0032) &&
+                          (dPhiIn < 0.0547) &&
+                          (HoE < 0.046 + 1.16/energy + 0.0324*rho/energy) &&
+                          (eInverseMinusPInverse < 0.184) &&
+                          (mHits <= 1) &&
+                          (isPassConVeto == true);
+
+               isTightNoIso = (sigmaIetaIeta < 0.0104) &&
+                         (dEtaSeed < 0.00255) &&
+                         (dPhiIn < 0.022) &&
+                         (HoE < 0.026 + 1.15/energy + 0.0324*rho/energy) &&
+                         (eInverseMinusPInverse < 0.159) &&
+                         (mHits <= 1) &&
+                         (isPassConVeto == true);
            }// endif (fabs(eleEta) <= 1.479)
 
            else{
@@ -660,6 +693,30 @@ ZMuMuInclusiveAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
                          (eInverseMinusPInverse < 0.0197) &&
                          (mHits <= 1) &&
                          (isPassConVeto == true);
+
+               isLooseNoIso = (sigmaIetaIeta < 0.0425) &&
+                         (dEtaSeed < 0.00674) &&
+                         (dPhiIn < 0.169) &&
+                         (HoE < 0.0441 + 2.54/energy + 0.183*rho/energy) &&
+                         (eInverseMinusPInverse < 0.111) &&
+                         (mHits <= 1) &&
+                         (isPassConVeto == true);
+
+               isMediumNoIso = (sigmaIetaIeta < 0.0387) &&
+                          (dEtaSeed < 0.00632) &&
+                          (dPhiIn < 0.0394) &&
+                          (HoE < 0.0275 + 2.52/energy + 0.183*rho/energy) &&
+                          (eInverseMinusPInverse < 0.0721) &&
+                          (mHits <= 1) &&
+                          (isPassConVeto == true);
+
+               isTightNoIso = (sigmaIetaIeta < 0.0353) &&
+                         (dEtaSeed < 0.00501) &&
+                         (dPhiIn < 0.0236) &&
+                         (HoE < 0.0188 + 2.06/energy + 0.183*rho/energy) &&
+                         (eInverseMinusPInverse < 0.0197) &&
+                         (mHits <= 1) &&
+                         (isPassConVeto == true);
            } // end else (fabs(eleEta) > 1.479)
 
            recoElectronPt.push_back(iElectron->pt());
@@ -671,6 +728,9 @@ ZMuMuInclusiveAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
            recoElectronIdLoose.push_back(isLoose);
            recoElectronIdMedium.push_back(isMedium);
            recoElectronIdTight.push_back(isTight);
+           recoElectronIdLooseNoIso.push_back(isLooseNoIso);
+           recoElectronIdMediumNoIso.push_back(isMediumNoIso);
+           recoElectronIdTightNoIso.push_back(isTightNoIso);
            recoElectronEcalTrkEnergyPostCorr.push_back(iElectron->userFloat("ecalTrkEnergyPostCorr"));
            recoElectronEcalTrkEnergyErrPostCorr.push_back(iElectron->userFloat("ecalTrkEnergyErrPostCorr"));
 
@@ -690,6 +750,8 @@ ZMuMuInclusiveAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
            recoTauEnergy.push_back(iTau->energy());
            recoTauPDGId.push_back(iTau->pdgId());
            recoTauDecayMode.push_back(iTau->decayMode());
+           recoTauDecayModeFinding.push_back(iTau->tauID("decayModeFinding"));
+           recoTauDecayModeFindingNewDMs.push_back(iTau->tauID("decayModeFindingNewDMs"));
            recoTauRefToMuon.push_back(0);
            recoTauRefToElectron.push_back(0);
 
@@ -949,6 +1011,9 @@ ZMuMuInclusiveAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
    recoElectronIdLoose.clear();
    recoElectronIdMedium.clear();
    recoElectronIdTight.clear();
+   recoElectronIdLooseNoIso.clear();
+   recoElectronIdMediumNoIso.clear();
+   recoElectronIdTightNoIso.clear();
    recoElectronEcalTrkEnergyPostCorr.clear();
    recoElectronEcalTrkEnergyErrPostCorr.clear();
    recoElectronRefToMuon.clear();
@@ -961,6 +1026,8 @@ ZMuMuInclusiveAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
    recoTauEnergy.clear();
    recoTauPDGId.clear();
    recoTauDecayMode.clear();
+   recoTauDecayModeFinding.clear();
+   recoTauDecayModeFindingNewDMs.clear();
    recoTauRefToMuon.clear();
    recoTauRefToElectron.clear();
 
@@ -1229,6 +1296,9 @@ ZMuMuInclusiveAnalyzer::beginJob()
     objectTree->Branch("recoElectronIdLoose", &recoElectronIdLoose);
     objectTree->Branch("recoElectronIdMedium", &recoElectronIdMedium);
     objectTree->Branch("recoElectronIdTight", &recoElectronIdTight);
+    objectTree->Branch("recoElectronIdLooseNoIso", &recoElectronIdLooseNoIso);
+    objectTree->Branch("recoElectronIdMediumNoIso", &recoElectronIdMediumNoIso);
+    objectTree->Branch("recoElectronIdTightNoIso", &recoElectronIdTightNoIso);
     objectTree->Branch("recoElectronEcalTrkEnergyPostCorr", &recoElectronEcalTrkEnergyPostCorr);
     objectTree->Branch("recoElectronEcalTrkEnergyErrPostCorr", &recoElectronEcalTrkEnergyErrPostCorr);
     objectTree->Branch("recoElectronRefToMuon", &recoElectronRefToMuon);
@@ -1240,6 +1310,8 @@ ZMuMuInclusiveAnalyzer::beginJob()
     objectTree->Branch("recoTauEnergy", &recoTauEnergy);
     objectTree->Branch("recoTauPDGId", &recoTauPDGId);
     objectTree->Branch("recoTauDecayMode", &recoTauDecayMode);
+    objectTree->Branch("recoTauDecayModeFinding", &recoTauDecayModeFinding);
+    objectTree->Branch("recoTauDecayModeFindingNewDMs", &recoTauDecayModeFindingNewDMs);
     objectTree->Branch("recoTauRefToMuon", &recoTauRefToMuon);
     objectTree->Branch("recoTauRefToElectron", &recoTauRefToElectron);
 
