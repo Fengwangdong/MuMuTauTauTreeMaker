@@ -143,7 +143,8 @@ if options.isMC == 1:
             process.ElectronCandSelector*
             process.rerunTauIDSequence*
             process.TauCandSelector*
-            process.JetSelector*
+            process.DeepDiTauProducer*
+            process.JetIdEmbedder*
             process.GenMuonCandSelector*
             process.GenElectronCandSelector*
             process.GenTauMuCandSelector*
@@ -167,7 +168,8 @@ else:
             process.ElectronCandSelector*
             process.rerunTauIDSequence*
             process.TauCandSelector*
-            process.JetSelector*
+            process.DeepDiTauProducer*
+            process.JetIdEmbedder*
             process.ZMuMuInclusiveAnalyzer
     )
 

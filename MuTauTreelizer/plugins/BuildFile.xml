@@ -8,4 +8,5 @@
 <use name="PhysicsTools/UtilAlgos"/>
 <use name="PhysicsTools/Utilities"/>
 <use name="RecoEgamma/EgammaTools"/>
+<use name="MuMuTauTauTreeMaker/MuTauTreelizer"/>
 <flags EDM_PLUGIN="1"/>

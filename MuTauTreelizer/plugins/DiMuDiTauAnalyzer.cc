@@ -206,6 +206,12 @@ class DiMuDiTauAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>
       vector<float> recoJetPhi;
       vector<float> recoJetEnergy;
       vector<float> recoJetCSV;
+      vector<float> recoJetDeepDiTauValue;
+      vector<float> recoJetDeepDiTauValueMD;
+      vector<int> recoJetIdLoose;
+      vector<int> recoJetIdTight;
+      vector<int> recoJetIdTightLepVeto;
+      vector<int> recoJetIdPileUp;
       
       // --- reconstructed MET ---
       vector<float> recoMET;
@@ -969,6 +975,7 @@ DiMuDiTauAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
    {
        for(edm::View<pat::Jet>::const_iterator iJet=pJet->begin(); iJet!=pJet->end(); iJet++)
        {
+           if (iJet->pt() < 20 || fabs(iJet->eta()) > 2.5) continue;
            recoJetPt.push_back(iJet->pt());
            recoJetEta.push_back(iJet->eta());
            recoJetPhi.push_back(iJet->phi());
@@ -977,6 +984,12 @@ DiMuDiTauAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
            // reference: https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookMiniAOD2017#Jets
            // https://twiki.cern.ch/twiki/bin/viewauth/CMS/BtagRecommendation80XReReco#Supported_Algorithms_and_Operati
            recoJetCSV.push_back(iJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags"));
+           recoJetDeepDiTauValue.push_back(iJet->userFloat("ditau2017v1"));
+           recoJetDeepDiTauValueMD.push_back(iJet->userFloat("ditau2017MDv1"));
+           recoJetIdLoose.push_back(iJet->userInt("idLoose"));
+           recoJetIdTight.push_back(iJet->userInt("idTight"));
+           recoJetIdTightLepVeto.push_back(iJet->userInt("idTightLepVeto"));
+           recoJetIdPileUp.push_back(iJet->userInt("puID"));
        } // end for loop on jets
    } // end if pJet->size()>0
 
@@ -1106,6 +1119,12 @@ DiMuDiTauAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
    recoJetPhi.clear();
    recoJetEnergy.clear();
    recoJetCSV.clear();
+   recoJetDeepDiTauValue.clear();
+   recoJetDeepDiTauValueMD.clear();
+   recoJetIdLoose.clear();
+   recoJetIdTight.clear();
+   recoJetIdTightLepVeto.clear();
+   recoJetIdPileUp.clear();
    
    // --- reconstructed MET ---
    recoMET.clear();
@@ -1395,6 +1414,12 @@ DiMuDiTauAnalyzer::beginJob()
     objectTree->Branch("recoJetPhi", &recoJetPhi);
     objectTree->Branch("recoJetEnergy", &recoJetEnergy);
     objectTree->Branch("recoJetCSV", &recoJetCSV);
+    objectTree->Branch("recoJetDeepDiTauValue", &recoJetDeepDiTauValue);
+    objectTree->Branch("recoJetDeepDiTauValueMD", &recoJetDeepDiTauValueMD);
+    objectTree->Branch("recoJetIdLoose", &recoJetIdLoose);
+    objectTree->Branch("recoJetIdTight", &recoJetIdTight);
+    objectTree->Branch("recoJetIdTightLepVeto", &recoJetIdTightLepVeto);
+    objectTree->Branch("recoJetIdPileUp", &recoJetIdPileUp);
     
     objectTree->Branch("recoMET", &recoMET);
     objectTree->Branch("recoMETPhi", &recoMETPhi);

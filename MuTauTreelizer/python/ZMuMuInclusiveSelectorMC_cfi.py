@@ -57,11 +57,30 @@ TauCandSelector = cms.EDFilter("TauCandSelector",
         etaMax = cms.double(2.4),
 )
 
-JetSelector = cms.EDFilter("JetSelector",
-        jetTag = cms.InputTag('slimmedJets'),
-        jetIdName = cms.string("Tight"), # reference: https://twiki.cern.ch/twiki/bin/view/CMS/JetID13TeVRun2017
-        etaCut = cms.double(2.4),
-        ptCut = cms.double(20),
+DeepDiTauProducer = cms.EDProducer("DeepDiTauProducer",
+        slimmedJetTag = cms.InputTag('slimmedJets'),
+        DeepDiTauConfiguration = cms.PSet(
+            memmapped = cms.bool(False),
+            graphDefinitions = cms.VPSet(
+                cms.PSet(
+                    name = cms.string('ditau2017v1'),
+                    path = cms.FileInPath('MuMuTauTauTreeMaker/MuTauTreelizer/data/ditau_2017_v1.pb'),
+                    means = cms.FileInPath('MuMuTauTauTreeMaker/MuTauTreelizer/data/ditau_2017_v1_means_sigmas.txt'),
+                ),
+                cms.PSet(
+                    name = cms.string('ditau2017MDv1'),
+                    path = cms.FileInPath('MuMuTauTauTreeMaker/MuTauTreelizer/data/ditau_2017_md_v1.pb'),
+                    means = cms.FileInPath('MuMuTauTauTreeMaker/MuTauTreelizer/data/ditau_2017_md_v1_means_sigmas.txt'),
+                ),
+            ),
+        ),
+)
+
+JetIdEmbedder = cms.EDProducer("JetIdEmbedder",
+        slimmedJetTag = cms.InputTag('slimmedJets'),
+        discriminator = cms.string('pileupJetId:fullDiscriminant'),
+        ditau2017v1 = cms.InputTag("DeepDiTauProducer","ditau2017v1"),
+        ditau2017MDv1 = cms.InputTag("DeepDiTauProducer","ditau2017MDv1"),
 )
 
 GenMuonCandSelector = cms.EDFilter("GenMuonCandSelector",
@@ -98,7 +117,7 @@ ZMuMuInclusiveAnalyzer = cms.EDAnalyzer('ZMuMuInclusiveAnalyzer',
         MuTag = cms.InputTag("TrigMuMatcher"),
         EleTag = cms.InputTag("ElectronCandSelector"),
         TauTag = cms.InputTag("TauCandSelector"),
-        JetTag = cms.InputTag("JetSelector"),
+        JetTag = cms.InputTag("JetIdEmbedder"),
         MetTag = cms.InputTag("slimmedMETs"),
         VertexTag = cms.InputTag("offlineSlimmedPrimaryVertices"),
         rhoTag = cms.InputTag("fixedGridRhoAll"),

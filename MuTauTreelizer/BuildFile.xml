@@ -2,4 +2,7 @@
 <use name="FWCore/PluginManager"/>
 <use name="FWCore/ParameterSet"/>
 <use name="PhysicsTools/UtilAlgos"/>
-<flags EDM_PLUGIN="1"/>
+<use name="PhysicsTools/TensorFlow"/>
+<export>
+    <lib name="1"/>
+</export>
