@@ -7,6 +7,7 @@ options = VarParsing.VarParsing('analysis')
 options.inputFiles = ['/store/group/phys_higgs/HiggsExo/fengwang/SUSYGluGluToHToAA_AToMuMu_AToTauTau_M-125_M-19_TuneCUETP8M1_13TeV_madgraph_pythia8/MiniAOD_H125AA19_DiMuDiTau_Fall17DRPremix_v1/190515_140053/0000/mumutautau_1.root']
 options.register('isMC', 1, VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.int, "Sample is MC")
 options.register('tauCluster', 2, VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.int, "different tau clusters")
+options.register('muTrigger', 1, VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.int, "number of muons triggered")
 options.register('numThreads', 8, VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.int, "Set number of CPU cores")
 options.parseArguments()
 
@@ -19,16 +20,33 @@ from Configuration.AlCa.GlobalTag import GlobalTag
 ########## Please specify if you are running on data (0) or MC (1) in the command line: #########################
 ########### eg: cmsRun runDiMuDiTau_2018_cfg.py isMC=1 ###############
 ##########################################################################
+process.load("MuMuTauTauTreeMaker.MuTauTreelizer.DiMuDiTauSelector_cfi")
 
 if options.isMC == 1:
     print " ****** we will run on sample of: MC ******"
-    process.load("MuMuTauTauTreeMaker.MuTauTreelizer.DiMuDiTauSelectorMC_cfi")
-    process.GlobalTag.globaltag = '102X_upgrade2018_realistic_v20'
+    process.GlobalTag.globaltag = '102X_upgrade2018_realistic_v21'
+    if options.muTrigger == 2:
+        process.HLTFilter = cms.Sequence(process.HLTEleDiMu)
+        process.TrigRecoMuMatcher = cms.Sequence(process.TrigDiMuMatcher)
+        process.DiMuDiTauEDAnalyzer = cms.Sequence(process.DiMuDiTauAnalyzerDiMuTrigMC)
+
+    else:
+        process.HLTFilter = cms.Sequence(process.HLTEle)
+        process.TrigRecoMuMatcher = cms.Sequence(process.TrigMuMatcher)
+        process.DiMuDiTauEDAnalyzer = cms.Sequence(process.DiMuDiTauAnalyzerMC)
 
 else:
     print " ****** we will run on sample of: data ******"
-    process.load("MuMuTauTauTreeMaker.MuTauTreelizer.DiMuDiTauSelector_cfi")
-    process.GlobalTag.globaltag = '102X_dataRun2_v12'
+    process.GlobalTag.globaltag = '102X_dataRun2_v13'
+    if options.muTrigger == 2:
+        process.HLTFilter = cms.Sequence(process.HLTEleDiMu)
+        process.TrigRecoMuMatcher = cms.Sequence(process.TrigDiMuMatcher)
+        process.DiMuDiTauEDAnalyzer = cms.Sequence(process.DiMuDiTauAnalyzerDiMuTrig)
+
+    else:
+        process.HLTFilter = cms.Sequence(process.HLTEle)
+        process.TrigRecoMuMatcher = cms.Sequence(process.TrigMuMatcher)
+        process.DiMuDiTauEDAnalyzer = cms.Sequence(process.DiMuDiTauAnalyzer)
 
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 process.MessageLogger.cerr.FwkReport.reportEvery = cms.untracked.int32(1000)
@@ -135,10 +153,10 @@ setupEgammaPostRecoSeq(process, era='2018-Prompt')
 if options.isMC == 1:
     process.treelizer = cms.Sequence(
             process.lumiTree*
-            process.HLTEle*
+            process.HLTFilter*
             process.MuonID*
             process.MuonSelector*
-            process.TrigMuMatcher*
+            process.TrigRecoMuMatcher*
             process.egammaPostRecoSeq*
             process.ElectronCandSelector*
             process.rerunTauIDSequence*
@@ -150,7 +168,7 @@ if options.isMC == 1:
             process.GenTauMuCandSelector*
             process.GenTauEleCandSelector*
             process.GenTauHadCandSelector*
-            process.DiMuDiTauAnalyzer
+            process.DiMuDiTauEDAnalyzer
     )
 
     process.TFileService = cms.Service("TFileService",
@@ -160,17 +178,17 @@ if options.isMC == 1:
 else:
     process.treelizer = cms.Sequence(
             process.lumiTree*
-            process.HLTEle*
+            process.HLTFilter*
             process.MuonID*
             process.MuonSelector*
-            process.TrigMuMatcher*
+            process.TrigRecoMuMatcher*
             process.egammaPostRecoSeq*
             process.ElectronCandSelector*
             process.rerunTauIDSequence*
             process.TauCandSelector*
             process.DeepDiTauProducer*
             process.JetIdEmbedder*
-            process.DiMuDiTauAnalyzer
+            process.DiMuDiTauEDAnalyzer
     )
 
     process.TFileService = cms.Service("TFileService",

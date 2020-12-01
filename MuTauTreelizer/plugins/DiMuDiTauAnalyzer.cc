@@ -84,6 +84,7 @@ class DiMuDiTauAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>
       edm::EDGetTokenT<double> rhoTag;
       EffectiveAreas effectiveAreas;
       bool isMC;
+      int numberOfTrigMus;
       edm::EDGetTokenT<edm::View<PileupSummaryInfo>> PileupTag;
       edm::EDGetTokenT<GenEventInfoProduct> generator;
       edm::EDGetTokenT<edm::View<reco::GenParticle>> GenMuTag;
@@ -308,6 +309,7 @@ DiMuDiTauAnalyzer::DiMuDiTauAnalyzer(const edm::ParameterSet& iConfig):
    //now do what ever initialization is needed
    usesResource("TFileService");
    isMC = iConfig.getParameter<bool>("isMC");
+   numberOfTrigMus = iConfig.getParameter<int>("numberOfTrigMus");
 }
 
 
@@ -570,6 +572,12 @@ DiMuDiTauAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
                recoMuonTriggerFlag.push_back(1);
                muonCounter++;
            } // end if muonCounter == 0
+
+           else if (muonCounter == 1 && numberOfTrigMus == 2)
+           {
+               recoMuonTriggerFlag.push_back(1);
+               muonCounter++;
+           } // end if muonCounter == 1 && numberOfTrigMus == 2
 
            else{
                recoMuonTriggerFlag.push_back(0);
@@ -975,7 +983,7 @@ DiMuDiTauAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
    {
        for(edm::View<pat::Jet>::const_iterator iJet=pJet->begin(); iJet!=pJet->end(); iJet++)
        {
-           if (iJet->pt() < 20 || fabs(iJet->eta()) > 2.5) continue;
+           if (iJet->pt() < 17 || fabs(iJet->eta()) > 2.5) continue;
            recoJetPt.push_back(iJet->pt());
            recoJetEta.push_back(iJet->eta());
            recoJetPhi.push_back(iJet->phi());

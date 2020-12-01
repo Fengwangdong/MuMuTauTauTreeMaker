@@ -59,6 +59,7 @@ class TrigMuMatcher : public edm::stream::EDFilter<> {
       edm::EDGetTokenT<edm::TriggerResults> triggerBits_;
       edm::EDGetTokenT<std::vector<pat::TriggerObjectStandAlone>> triggerObjects_;
       std::vector<std::string> trigNames_;
+      int numberOfTrigMus_;
       double dRCut_;
       double muPtCut_;
 };
@@ -82,9 +83,9 @@ TrigMuMatcher::TrigMuMatcher(const edm::ParameterSet& iConfig):
    //now do what ever initialization is needed
    produces<std::vector<pat::Muon>>();
    trigNames_ = iConfig.getParameter<std::vector<std::string>>("trigNames");
+   numberOfTrigMus_ = iConfig.getParameter<int>("numberOfTrigMus");
    dRCut_ = iConfig.getParameter<double>("dRCut");
    muPtCut_ = iConfig.getParameter<double>("muPtCut");
-
 }
 
 
@@ -121,28 +122,33 @@ TrigMuMatcher::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
    // --- find the user customized trigger path names in the existing trigger path list in TriggerResults of HLT ---
    for (unsigned int i = 0, n = pTriggerBits->size(); i<n; ++i)
    {
-       for ( std::string iName : trigNames_ ){
-           if (names.triggerName(i).find(iName) != std::string::npos )
+       for (std::string iName : trigNames_){
+           if (names.triggerName(i).find(iName) != std::string::npos)
            {
                corrTrigSpot.push_back(i);
-           }
-       }
-   }
+           } // end if find matched trigger name
+       } // end for loop on provided trigger names
+   } // end for loop on Trigger Results (HLT)
 
    // --- prepare for the reco-muon object for trigger matching --- 
    pat::Muon recoLeadingMu;
+   pat::Muon recoSecondMu;
    pat::TriggerObjectStandAlone trigObj;
    bool checkPassEvent = false;
 
-   for (uint iobj = 0; iobj < pTriggerObjects->size(); iobj++)
+   for (unsigned int num : corrTrigSpot) // Loop over the trigger paths of TriggerResults cluster that are compatible with customized trigger paths
    {
-       trigObj = pTriggerObjects->at(iobj);
-       trigObj.unpackPathNames(names); // get the list of trigger paths of each triggered object
-       bool checkObjMatch = false; // This variable will be used to check if this object(muon) passes at least one customized trigger path
+       const std::string& name = names.triggerName(num);
+       bool checkObjMatch = false; // This variable will be used to check if an object(muon) passes at least one customized trigger path
+       bool checkObj2Match = false; // This variable will be used to check if another object(muon) passes at least one customized trigger path
 
-       for (unsigned int num : corrTrigSpot) // Loop over the trigger paths of TriggerResults cluster that are compatible with customized trigger paths
+       uint indexTrigMu1 = 0;
+
+       for (uint iobj = 0; iobj < pTriggerObjects->size(); iobj++)
        {
-           const std::string& name = names.triggerName(num);
+           trigObj = pTriggerObjects->at(iobj);
+           trigObj.unpackPathNames(names); // get the list of trigger paths of each triggered object
+
            if (trigObj.hasPathName(name, true) && !checkObjMatch) // if there is no yet reco-muon candidates matched with the triggered object
            {
                for(edm::View<pat::Muon>::const_iterator iMuon=pMuons->begin(); iMuon!=pMuons->end(); ++iMuon) // loop over all the reco-muons
@@ -151,23 +157,71 @@ TrigMuMatcher::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
                    if (iMuon->pt() > muPtCut_ && dRCurr < dRCut_ && fabs(iMuon->pdgId()) == fabs(trigObj.pdgId())) // match reco-mu with trigger-mu
                    {
                        recoLeadingMu = *iMuon;
-                       checkPassEvent = true;
                        checkObjMatch = true;
+                       indexTrigMu1 = iobj;
                        break;
                    } // end if reco-mu matched with trigger-mu
-               } // end loop of reconstructed muons 
-           } // end if there is at least one reco-muon candidate matched with the triggered object
-       } // end loop of trigger paths in TriggerResults cluster that are compatible with customized trigger paths
-   } // end loop of all the triggered objects
+               } // end loop of reconstructed muons
+           } // end if there is a reco-muon candidate matched with the triggered object
+
+           if (checkObjMatch && numberOfTrigMus_ != 2)
+           {
+               checkPassEvent = true;
+               break;
+           } // end if checkObjMatch == true && single muon trigger
+       
+           if (checkObjMatch && numberOfTrigMus_ == 2)
+           {
+               if (iobj == indexTrigMu1) continue;
+               if (trigObj.hasPathName(name, true) && !checkObj2Match) // if there is no yet reco-muon candidates matched with the triggered object
+               {
+                   for(edm::View<pat::Muon>::const_iterator iMuon=pMuons->begin(); iMuon!=pMuons->end(); ++iMuon) // loop over all the reco-muons
+                   {
+                       if (deltaR(*iMuon, recoLeadingMu) < 0.0001 && (iMuon->pt() - recoLeadingMu.pt()) < 0.00001) continue;
+                       double dRCurr = deltaR(*iMuon, trigObj); // use dR to match the reco-muon and the triggered object
+                       if (iMuon->pt() > muPtCut_ && dRCurr < dRCut_ && fabs(iMuon->pdgId()) == fabs(trigObj.pdgId())) // match reco-mu with trigger-mu
+                       {
+                           recoSecondMu = *iMuon;
+                           checkObj2Match = true;
+                           break;
+                       } // end if reco-mu matched with trigger-mu
+                   } // end loop of reconstructed muons
+               } // end if there is a reco-muon candidate matched with the triggered object
+           } // end if checkObjMatch && numberOfTrigMus_ == 2
+
+           if (checkObj2Match && numberOfTrigMus_ == 2)
+           {
+               checkPassEvent = true;
+               break;
+           } // end if checkObj2Match = true
+       } // end loop of all the triggered objects
+
+       if (checkPassEvent) break;
+   } // end loop of trigger paths in TriggerResults cluster that are compatible with customized trigger paths
 
    // --- resort reco-mu (the one matched with trigger-mu will be the leading muon) --- 
+   // --- resort reco-mu (the other matched with trigger-mu will be the second leading muon) --- 
    if (checkPassEvent)
    {
-       muonColl->push_back(recoLeadingMu);
+       if (numberOfTrigMus_ != 2) muonColl->push_back(recoLeadingMu);
+       if (numberOfTrigMus_ == 2) 
+       {
+           if (recoLeadingMu.pt() > recoSecondMu.pt()) 
+           {
+               muonColl->push_back(recoLeadingMu);
+               muonColl->push_back(recoSecondMu);
+           } // end if recoLeadingMu.pt() > recoSecondMu.pt()
+
+           else{
+               muonColl->push_back(recoSecondMu);
+               muonColl->push_back(recoLeadingMu);
+           } // end recoLeadingMu.pt() < recoSecondMu.pt()
+       } // end if numberOfTrigMus_ == 2
 
        for(edm::View<pat::Muon>::const_iterator iMuon=pMuons->begin(); iMuon!=pMuons->end(); ++iMuon)
        {
            if (deltaR(*iMuon, recoLeadingMu) < 0.0001 && (iMuon->pt() - recoLeadingMu.pt()) < 0.00001) continue; 
+           if (numberOfTrigMus_ == 2 && deltaR(*iMuon, recoSecondMu) < 0.0001 && (iMuon->pt() - recoSecondMu.pt()) < 0.00001) continue; 
            muonColl->push_back(*iMuon);
        } // end for loop on reco-muons
 
