@@ -125,7 +125,7 @@ elif options.tauCluster == 5:
     tauIdEmbedder.runTauID()
     process.rerunTauIDSequence = cms.Sequence(process.rerunMvaIsolationSequence * getattr(process,updatedTauName))
 
-else:
+elif options.tauCluster == 6:
     print " ====== use slimmedTausElectronCleanedTight cluster ======"
     updatedTauName = "slimmedTausNewID"
     import MuMuTauTauTreeMaker.MuTauTreelizer.TauIdDeep_slimmedTausElectronCleanedTight as tauIdConfig
@@ -136,6 +136,21 @@ else:
             )
     tauIdEmbedder.runTauID()
     process.rerunTauIDSequence = cms.Sequence(process.rerunMvaIsolationSequence * getattr(process,updatedTauName))
+
+else:
+    print " ====== use slimmedTausBoosted cluster ======"
+    updatedTauName = "slimmedTausNewID"
+    import MuMuTauTauTreeMaker.MuTauTreelizer.TauIdDeep_slimmedTausBoosted as tauIdConfig
+    tauIdEmbedder = tauIdConfig.TauIDEmbedder(process, cms,
+            debug = False,
+            updatedTauName = updatedTauName,
+            PATTauProducer = cms.InputTag('cleanedSlimmedTausBoosted'),
+            srcChargedIsoPtSum = cms.string('chargedIsoPtSumNoOverLap'),
+            srcNeutralIsoPtSum = cms.string('neutralIsoPtSumNoOverLap'),
+            toKeep = ["deepTau2017v2p1","2017v2"]
+            )
+    tauIdEmbedder.runTauID()
+    process.rerunTauIDSequence = cms.Sequence(process.ca8PFJetsCHSprunedForBoostedTausPAT * getattr(process, "cleanedSlimmedTausBoosted") * process.rerunMvaIsolationSequence * getattr(process,updatedTauName))
 ############################################################
 
 if options.isMC == 1:
