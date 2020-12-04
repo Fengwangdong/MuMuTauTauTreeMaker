@@ -20,24 +20,26 @@ from Configuration.AlCa.GlobalTag import GlobalTag
 ########## Please specify if you are running on data (0) or MC (1) in the command line: #########################
 ########### eg: cmsRun runDiMuDiTau_2018_cfg.py isMC=1 ###############
 ##########################################################################
-process.load("MuMuTauTauTreeMaker.MuTauTreelizer.DiMuDiTauSelector_cfi")
-
 if options.isMC == 1:
     print " ****** we will run on sample of: MC ******"
     process.GlobalTag.globaltag = '102X_upgrade2018_realistic_v21'
+    process.load("MuMuTauTauTreeMaker.MuTauTreelizer.DiMuDiTauSelectorMC_cfi")
+
     if options.muTrigger == 2:
         process.HLTFilter = cms.Sequence(process.HLTEleDiMu)
         process.TrigRecoMuMatcher = cms.Sequence(process.TrigDiMuMatcher)
-        process.DiMuDiTauEDAnalyzer = cms.Sequence(process.DiMuDiTauAnalyzerDiMuTrigMC)
+        process.DiMuDiTauEDAnalyzer = cms.Sequence(process.DiMuDiTauAnalyzerDiMuTrig)
 
     else:
         process.HLTFilter = cms.Sequence(process.HLTEle)
         process.TrigRecoMuMatcher = cms.Sequence(process.TrigMuMatcher)
-        process.DiMuDiTauEDAnalyzer = cms.Sequence(process.DiMuDiTauAnalyzerMC)
+        process.DiMuDiTauEDAnalyzer = cms.Sequence(process.DiMuDiTauAnalyzer)
 
 else:
     print " ****** we will run on sample of: data ******"
     process.GlobalTag.globaltag = '102X_dataRun2_v13'
+    process.load("MuMuTauTauTreeMaker.MuTauTreelizer.DiMuDiTauSelector_cfi")
+
     if options.muTrigger == 2:
         process.HLTFilter = cms.Sequence(process.HLTEleDiMu)
         process.TrigRecoMuMatcher = cms.Sequence(process.TrigDiMuMatcher)

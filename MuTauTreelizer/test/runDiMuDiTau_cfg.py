@@ -17,22 +17,24 @@ process.load("FWCore.MessageService.MessageLogger_cfi")
 ########## Please specify if you are running on data (0) or MC (1) in the command line: #########################
 ########### eg: cmsRun runDiMuDiTau_cfg.py isMC=1 ###############
 ##########################################################################
-process.load("MuMuTauTauTreeMaker.MuTauTreelizer.DiMuDiTauSelector_cfi")
-
 if options.isMC == 1:
     print " ****** we will run on sample of: MC ******"
+    process.load("MuMuTauTauTreeMaker.MuTauTreelizer.DiMuDiTauSelectorMC_cfi")
+
     if options.muTrigger == 2:
         process.HLTFilter = cms.Sequence(process.HLTEleDiMu)
         process.TrigRecoMuMatcher = cms.Sequence(process.TrigDiMuMatcher)
-        process.DiMuDiTauEDAnalyzer = cms.Sequence(process.DiMuDiTauAnalyzerDiMuTrigMC)
+        process.DiMuDiTauEDAnalyzer = cms.Sequence(process.DiMuDiTauAnalyzerDiMuTrig)
 
     else:
         process.HLTFilter = cms.Sequence(process.HLTEle)
         process.TrigRecoMuMatcher = cms.Sequence(process.TrigMuMatcher)
-        process.DiMuDiTauEDAnalyzer = cms.Sequence(process.DiMuDiTauAnalyzerMC)
+        process.DiMuDiTauEDAnalyzer = cms.Sequence(process.DiMuDiTauAnalyzer)
 
 else:
     print " ****** we will run on sample of: data ******"
+    process.load("MuMuTauTauTreeMaker.MuTauTreelizer.DiMuDiTauSelector_cfi")
+
     if options.muTrigger == 2:
         process.HLTFilter = cms.Sequence(process.HLTEleDiMu)
         process.TrigRecoMuMatcher = cms.Sequence(process.TrigDiMuMatcher)

@@ -16,13 +16,13 @@ process.load("FWCore.MessageService.MessageLogger_cfi")
 ########## Please specify if you are running on data (0) or MC (1) in the command line: #########################
 ########### eg: cmsRun runZTauMuTauHad_cfg.py isMC=1 ###############
 ##########################################################################
-process.load("MuMuTauTauTreeMaker.MuTauTreelizer.ZTauMuTauHadSelector_cfi")
-
 if options.isMC == 1:
     print " ****** we will run on sample of: MC ******"
+    process.load("MuMuTauTauTreeMaker.MuTauTreelizer.ZTauMuTauHadSelectorMC_cfi")
 
 else:
     print " ****** we will run on sample of: data ******"
+    process.load("MuMuTauTauTreeMaker.MuTauTreelizer.ZTauMuTauHadSelector_cfi")
 
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 process.MessageLogger.cerr.FwkReport.reportEvery = cms.untracked.int32(1000)
@@ -132,7 +132,7 @@ if options.isMC == 1:
             process.GenMuonCandSelector*
             process.GenTauMuCandSelector*
             process.GenTauHadCandSelector*
-            process.ZTauMuTauHadAnalyzerMC
+            process.ZTauMuTauHadAnalyzer
     )
 
     process.TFileService = cms.Service("TFileService",
