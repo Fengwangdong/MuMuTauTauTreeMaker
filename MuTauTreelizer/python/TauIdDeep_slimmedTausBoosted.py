@@ -13,7 +13,7 @@ class TauIDEmbedder(object):
     ]
 
     def __init__(self, process, cms, debug = False,
-                 updatedTauName = "slimmedTausNewID",
+                 updatedTauName = "slimmedTausBoostedNewID",
                  PATTauProducer = "cleanedSlimmedTausBoosted",
                  srcChargedIsoPtSum = "chargedIsoPtSumNoOverLap",
                  srcNeutralIsoPtSum = "neutralIsoPtSumNoOverLap",

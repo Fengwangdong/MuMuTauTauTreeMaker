@@ -78,6 +78,8 @@ class DiMuDiTauAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>
       edm::EDGetTokenT<edm::View<pat::Muon>> MuTag;
       edm::EDGetTokenT<edm::View<pat::Electron>> EleTag;
       edm::EDGetTokenT<edm::View<pat::Tau>> TauTag;
+      edm::EDGetTokenT<edm::View<pat::Tau>> TauMuonCleanedTag;
+      edm::EDGetTokenT<edm::View<pat::Tau>> TauElectronCleanedTag;
       edm::EDGetTokenT<edm::View<pat::Jet>> JetTag;
       edm::EDGetTokenT<edm::View<pat::MET>> MetTag;
       edm::EDGetTokenT<edm::View<reco::Vertex>> VertexTag;
@@ -109,6 +111,7 @@ class DiMuDiTauAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>
       vector<int> recoMuonTriggerFlag;
       vector<int> recoMuonRefToElectron;
       vector<int> recoMuonRefToTau;
+      vector<int> recoMuonRefToTauMuonCleaned;
       vector<int> recoMuonIdLoose;
       vector<int> recoMuonIdMedium;
       vector<int> recoMuonIdTight;
@@ -136,6 +139,7 @@ class DiMuDiTauAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>
       vector<float> recoElectronEnergySigmaDown;
       vector<int> recoElectronRefToMuon;
       vector<int> recoElectronRefToTau;
+      vector<int> recoElectronRefToTauElectronCleaned;
 
       // --- reconstructed taus ---
       vector<float> recoTauPt;
@@ -200,6 +204,134 @@ class DiMuDiTauAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>
 
       vector<int> recoTauRefToMuon;
       vector<int> recoTauRefToElectron;
+
+      // --- reconstructed taus muonCleaned ---
+      vector<float> recoTauMuonCleanedPt;
+      vector<float> recoTauMuonCleanedEta;
+      vector<float> recoTauMuonCleanedPhi;
+      vector<float> recoTauMuonCleanedEnergy;
+      vector<int> recoTauMuonCleanedPDGId;
+      vector<float> recoTauMuonCleanedDecayMode;
+      vector<float> recoTauMuonCleanedDecayModeFinding;
+      vector<float> recoTauMuonCleanedDecayModeFindingNewDMs;
+      vector<float> recoTauMuonCleanedIsoMVArawValue;
+      vector<float> recoTauMuonCleanedIsoMVAVVLoose;
+      vector<float> recoTauMuonCleanedIsoMVAVLoose;
+      vector<float> recoTauMuonCleanedIsoMVALoose;
+      vector<float> recoTauMuonCleanedIsoMVAMedium;
+      vector<float> recoTauMuonCleanedIsoMVATight;
+      vector<float> recoTauMuonCleanedIsoMVAVTight;
+      vector<float> recoTauMuonCleanedIsoMVAVVTight;
+      
+      vector<float> recoTauMuonCleanedAntiMuMVALoose;
+      vector<float> recoTauMuonCleanedAntiMuMVATight;
+
+      vector<float> recoTauMuonCleanedAntiEleMVArawValue;
+      vector<float> recoTauMuonCleanedAntiEleMVAVLoose;
+      vector<float> recoTauMuonCleanedAntiEleMVALoose;
+      vector<float> recoTauMuonCleanedAntiEleMVAMedium;
+      vector<float> recoTauMuonCleanedAntiEleMVATight;
+      vector<float> recoTauMuonCleanedAntiEleMVAVTight;
+
+      // *** deep tau ID variables ***
+      vector<float> recoTauMuonCleanedDeepVSeraw;
+      vector<float> recoTauMuonCleanedDeepVSjetraw;
+      vector<float> recoTauMuonCleanedDeepVSmuraw;
+ 
+      vector<float> recoTauMuonCleanedDeepVSeLoose;
+      vector<float> recoTauMuonCleanedDeepVSjetLoose;
+      vector<float> recoTauMuonCleanedDeepVSmuLoose;
+
+      vector<float> recoTauMuonCleanedDeepVSeMedium;
+      vector<float> recoTauMuonCleanedDeepVSjetMedium;
+      vector<float> recoTauMuonCleanedDeepVSmuMedium;
+
+      vector<float> recoTauMuonCleanedDeepVSeTight;
+      vector<float> recoTauMuonCleanedDeepVSjetTight;
+      vector<float> recoTauMuonCleanedDeepVSmuTight;
+
+      vector<float> recoTauMuonCleanedDeepVSeVLoose;
+      vector<float> recoTauMuonCleanedDeepVSjetVLoose;
+      vector<float> recoTauMuonCleanedDeepVSmuVLoose;
+
+      vector<float> recoTauMuonCleanedDeepVSeVTight;
+      vector<float> recoTauMuonCleanedDeepVSjetVTight;
+
+      vector<float> recoTauMuonCleanedDeepVSeVVLoose;
+      vector<float> recoTauMuonCleanedDeepVSjetVVLoose;
+
+      vector<float> recoTauMuonCleanedDeepVSeVVTight;
+      vector<float> recoTauMuonCleanedDeepVSjetVVTight;
+
+      vector<float> recoTauMuonCleanedDeepVSeVVVLoose;
+      vector<float> recoTauMuonCleanedDeepVSjetVVVLoose;
+
+      vector<int> recoTauMuonCleanedRefToMuon;
+      vector<int> recoTauMuonCleanedRefToElectron;
+
+      // --- reconstructed taus electronCleaned ---
+      vector<float> recoTauElectronCleanedPt;
+      vector<float> recoTauElectronCleanedEta;
+      vector<float> recoTauElectronCleanedPhi;
+      vector<float> recoTauElectronCleanedEnergy;
+      vector<int> recoTauElectronCleanedPDGId;
+      vector<float> recoTauElectronCleanedDecayMode;
+      vector<float> recoTauElectronCleanedDecayModeFinding;
+      vector<float> recoTauElectronCleanedDecayModeFindingNewDMs;
+      vector<float> recoTauElectronCleanedIsoMVArawValue;
+      vector<float> recoTauElectronCleanedIsoMVAVVLoose;
+      vector<float> recoTauElectronCleanedIsoMVAVLoose;
+      vector<float> recoTauElectronCleanedIsoMVALoose;
+      vector<float> recoTauElectronCleanedIsoMVAMedium;
+      vector<float> recoTauElectronCleanedIsoMVATight;
+      vector<float> recoTauElectronCleanedIsoMVAVTight;
+      vector<float> recoTauElectronCleanedIsoMVAVVTight;
+      
+      vector<float> recoTauElectronCleanedAntiMuMVALoose;
+      vector<float> recoTauElectronCleanedAntiMuMVATight;
+
+      vector<float> recoTauElectronCleanedAntiEleMVArawValue;
+      vector<float> recoTauElectronCleanedAntiEleMVAVLoose;
+      vector<float> recoTauElectronCleanedAntiEleMVALoose;
+      vector<float> recoTauElectronCleanedAntiEleMVAMedium;
+      vector<float> recoTauElectronCleanedAntiEleMVATight;
+      vector<float> recoTauElectronCleanedAntiEleMVAVTight;
+
+      // *** deep tau ID variables ***
+      vector<float> recoTauElectronCleanedDeepVSeraw;
+      vector<float> recoTauElectronCleanedDeepVSjetraw;
+      vector<float> recoTauElectronCleanedDeepVSmuraw;
+ 
+      vector<float> recoTauElectronCleanedDeepVSeLoose;
+      vector<float> recoTauElectronCleanedDeepVSjetLoose;
+      vector<float> recoTauElectronCleanedDeepVSmuLoose;
+
+      vector<float> recoTauElectronCleanedDeepVSeMedium;
+      vector<float> recoTauElectronCleanedDeepVSjetMedium;
+      vector<float> recoTauElectronCleanedDeepVSmuMedium;
+
+      vector<float> recoTauElectronCleanedDeepVSeTight;
+      vector<float> recoTauElectronCleanedDeepVSjetTight;
+      vector<float> recoTauElectronCleanedDeepVSmuTight;
+
+      vector<float> recoTauElectronCleanedDeepVSeVLoose;
+      vector<float> recoTauElectronCleanedDeepVSjetVLoose;
+      vector<float> recoTauElectronCleanedDeepVSmuVLoose;
+
+      vector<float> recoTauElectronCleanedDeepVSeVTight;
+      vector<float> recoTauElectronCleanedDeepVSjetVTight;
+
+      vector<float> recoTauElectronCleanedDeepVSeVVLoose;
+      vector<float> recoTauElectronCleanedDeepVSjetVVLoose;
+
+      vector<float> recoTauElectronCleanedDeepVSeVVTight;
+      vector<float> recoTauElectronCleanedDeepVSjetVVTight;
+
+      vector<float> recoTauElectronCleanedDeepVSeVVVLoose;
+      vector<float> recoTauElectronCleanedDeepVSjetVVVLoose;
+
+      vector<int> recoTauElectronCleanedRefToMuon;
+      vector<int> recoTauElectronCleanedRefToElectron;
 
       // --- reconstructed jets ---
       vector<float> recoJetPt;
@@ -293,6 +425,8 @@ DiMuDiTauAnalyzer::DiMuDiTauAnalyzer(const edm::ParameterSet& iConfig):
     MuTag(consumes<edm::View<pat::Muon>>(iConfig.getParameter<edm::InputTag>("MuTag"))),
     EleTag(consumes<edm::View<pat::Electron>>(iConfig.getParameter<edm::InputTag>("EleTag"))),
     TauTag(consumes<edm::View<pat::Tau>>(iConfig.getParameter<edm::InputTag>("TauTag"))),
+    TauMuonCleanedTag(consumes<edm::View<pat::Tau>>(iConfig.getParameter<edm::InputTag>("TauMuonCleanedTag"))),
+    TauElectronCleanedTag(consumes<edm::View<pat::Tau>>(iConfig.getParameter<edm::InputTag>("TauElectronCleanedTag"))),
     JetTag(consumes<edm::View<pat::Jet>>(iConfig.getParameter<edm::InputTag>("JetTag"))),
     MetTag(consumes<edm::View<pat::MET>>(iConfig.getParameter<edm::InputTag>("MetTag"))),
     VertexTag(consumes<edm::View<reco::Vertex>>(iConfig.getParameter<edm::InputTag>("VertexTag"))),
@@ -339,6 +473,12 @@ DiMuDiTauAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
 
    edm::Handle<edm::View<pat::Tau>> pTau;
    iEvent.getByToken(TauTag, pTau);
+
+   edm::Handle<edm::View<pat::Tau>> pTauMuonCleaned;
+   iEvent.getByToken(TauMuonCleanedTag, pTauMuonCleaned);
+
+   edm::Handle<edm::View<pat::Tau>> pTauElectronCleaned;
+   iEvent.getByToken(TauElectronCleanedTag, pTauElectronCleaned);
 
    edm::Handle<edm::View<pat::Jet>> pJet;
    iEvent.getByToken(JetTag, pJet);
@@ -557,6 +697,7 @@ DiMuDiTauAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
            recoMuonNTrackerLayers.push_back(iMuon->innerTrack()->hitPattern().trackerLayersWithMeasurement());
            recoMuonRefToElectron.push_back(0);
            recoMuonRefToTau.push_back(0);
+           recoMuonRefToTauMuonCleaned.push_back(0);
 
            bool goodGlob = iMuon->isGlobalMuon() && iMuon->globalTrack()->normalizedChi2() < 3 && iMuon->combinedQuality().chi2LocalPosition < 12 && iMuon->combinedQuality().trkKink < 20;
            int isMedium = muon::isLooseMuon(*iMuon) && iMuon->innerTrack()->validFraction() > 0.8 && muon::segmentCompatibility(*iMuon) > (goodGlob ? 0.303 : 0.451);
@@ -762,6 +903,7 @@ DiMuDiTauAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
 
            recoElectronRefToMuon.push_back(0);
            recoElectronRefToTau.push_back(0);
+           recoElectronRefToTauElectronCleaned.push_back(0);
        } // end for loop on electrons
    } // end if pElectron->size()>0
    
@@ -839,6 +981,156 @@ DiMuDiTauAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
            recoTauAntiEleMVAVTight.push_back(iTau->tauID("againstElectronVTightMVA6"));
        } // end for loop on taus
    } // end if pTau->size()>0
+
+   // --- prepare tau vector (muon cleaned) ---
+   if (pTauMuonCleaned->size()>0)
+   {
+       for(edm::View<pat::Tau>::const_iterator iTau=pTauMuonCleaned->begin(); iTau!=pTauMuonCleaned->end(); iTau++)
+       {
+           recoTauMuonCleanedPt.push_back(iTau->pt());
+           recoTauMuonCleanedEta.push_back(iTau->eta());
+           recoTauMuonCleanedPhi.push_back(iTau->phi());
+           recoTauMuonCleanedEnergy.push_back(iTau->energy());
+           recoTauMuonCleanedPDGId.push_back(iTau->pdgId());
+           recoTauMuonCleanedDecayMode.push_back(iTau->decayMode());
+           recoTauMuonCleanedDecayModeFinding.push_back(iTau->tauID("decayModeFinding"));
+           recoTauMuonCleanedDecayModeFindingNewDMs.push_back(iTau->tauID("decayModeFindingNewDMs"));
+           recoTauMuonCleanedRefToMuon.push_back(0);
+           recoTauMuonCleanedRefToElectron.push_back(0);
+
+           if (iTau->isTauIDAvailable("byIsolationMVArun2017v2DBoldDMwLTraw2017"))
+           {
+               recoTauMuonCleanedIsoMVArawValue.push_back(iTau->tauID("byIsolationMVArun2017v2DBoldDMwLTraw2017"));
+               recoTauMuonCleanedIsoMVAVVLoose.push_back(iTau->tauID("byVVLooseIsolationMVArun2017v2DBoldDMwLT2017"));
+               recoTauMuonCleanedIsoMVAVLoose.push_back(iTau->tauID("byVLooseIsolationMVArun2017v2DBoldDMwLT2017"));
+               recoTauMuonCleanedIsoMVALoose.push_back(iTau->tauID("byLooseIsolationMVArun2017v2DBoldDMwLT2017"));
+               recoTauMuonCleanedIsoMVAMedium.push_back(iTau->tauID("byMediumIsolationMVArun2017v2DBoldDMwLT2017"));
+               recoTauMuonCleanedIsoMVATight.push_back(iTau->tauID("byTightIsolationMVArun2017v2DBoldDMwLT2017"));
+               recoTauMuonCleanedIsoMVAVTight.push_back(iTau->tauID("byVTightIsolationMVArun2017v2DBoldDMwLT2017"));
+               recoTauMuonCleanedIsoMVAVVTight.push_back(iTau->tauID("byVVTightIsolationMVArun2017v2DBoldDMwLT2017"));
+           } // end if TauMVA ID available
+
+           if (iTau->isTauIDAvailable("byDeepTau2017v2p1MuonCleanedVSjetraw"))
+           {
+               recoTauMuonCleanedDeepVSeraw.push_back(iTau->tauID("byDeepTau2017v2p1MuonCleanedVSeraw"));
+               recoTauMuonCleanedDeepVSjetraw.push_back(iTau->tauID("byDeepTau2017v2p1MuonCleanedVSjetraw"));
+               recoTauMuonCleanedDeepVSmuraw.push_back(iTau->tauID("byDeepTau2017v2p1MuonCleanedVSmuraw"));
+
+               recoTauMuonCleanedDeepVSeLoose.push_back(iTau->tauID("byLooseDeepTau2017v2p1MuonCleanedVSe"));
+               recoTauMuonCleanedDeepVSjetLoose.push_back(iTau->tauID("byLooseDeepTau2017v2p1MuonCleanedVSjet"));
+               recoTauMuonCleanedDeepVSmuLoose.push_back(iTau->tauID("byLooseDeepTau2017v2p1MuonCleanedVSmu"));
+
+               recoTauMuonCleanedDeepVSeMedium.push_back(iTau->tauID("byMediumDeepTau2017v2p1MuonCleanedVSe"));
+               recoTauMuonCleanedDeepVSjetMedium.push_back(iTau->tauID("byMediumDeepTau2017v2p1MuonCleanedVSjet"));
+               recoTauMuonCleanedDeepVSmuMedium.push_back(iTau->tauID("byMediumDeepTau2017v2p1MuonCleanedVSmu"));
+
+               recoTauMuonCleanedDeepVSeTight.push_back(iTau->tauID("byTightDeepTau2017v2p1MuonCleanedVSe"));
+               recoTauMuonCleanedDeepVSjetTight.push_back(iTau->tauID("byTightDeepTau2017v2p1MuonCleanedVSjet"));
+               recoTauMuonCleanedDeepVSmuTight.push_back(iTau->tauID("byTightDeepTau2017v2p1MuonCleanedVSmu"));
+
+               recoTauMuonCleanedDeepVSeVLoose.push_back(iTau->tauID("byVLooseDeepTau2017v2p1MuonCleanedVSe"));
+               recoTauMuonCleanedDeepVSjetVLoose.push_back(iTau->tauID("byVLooseDeepTau2017v2p1MuonCleanedVSjet"));
+               recoTauMuonCleanedDeepVSmuVLoose.push_back(iTau->tauID("byVLooseDeepTau2017v2p1MuonCleanedVSmu"));
+
+               recoTauMuonCleanedDeepVSeVTight.push_back(iTau->tauID("byVTightDeepTau2017v2p1MuonCleanedVSe"));
+               recoTauMuonCleanedDeepVSjetVTight.push_back(iTau->tauID("byVTightDeepTau2017v2p1MuonCleanedVSjet"));
+
+               recoTauMuonCleanedDeepVSeVVLoose.push_back(iTau->tauID("byVVLooseDeepTau2017v2p1MuonCleanedVSe"));
+               recoTauMuonCleanedDeepVSjetVVLoose.push_back(iTau->tauID("byVVLooseDeepTau2017v2p1MuonCleanedVSjet"));
+
+               recoTauMuonCleanedDeepVSeVVTight.push_back(iTau->tauID("byVVTightDeepTau2017v2p1MuonCleanedVSe"));
+               recoTauMuonCleanedDeepVSjetVVTight.push_back(iTau->tauID("byVVTightDeepTau2017v2p1MuonCleanedVSjet"));
+
+               recoTauMuonCleanedDeepVSeVVVLoose.push_back(iTau->tauID("byVVVLooseDeepTau2017v2p1MuonCleanedVSe"));
+               recoTauMuonCleanedDeepVSjetVVVLoose.push_back(iTau->tauID("byVVVLooseDeepTau2017v2p1MuonCleanedVSjet"));
+           } // end if DeepTau ID available
+
+           recoTauMuonCleanedAntiMuMVALoose.push_back(iTau->tauID("againstMuonLoose3"));
+           recoTauMuonCleanedAntiMuMVATight.push_back(iTau->tauID("againstMuonTight3"));
+       
+           recoTauMuonCleanedAntiEleMVArawValue.push_back(iTau->tauID("againstElectronMVA6Raw"));
+           recoTauMuonCleanedAntiEleMVAVLoose.push_back(iTau->tauID("againstElectronVLooseMVA6"));
+           recoTauMuonCleanedAntiEleMVALoose.push_back(iTau->tauID("againstElectronLooseMVA6"));
+           recoTauMuonCleanedAntiEleMVAMedium.push_back(iTau->tauID("againstElectronMediumMVA6"));
+           recoTauMuonCleanedAntiEleMVATight.push_back(iTau->tauID("againstElectronTightMVA6"));
+           recoTauMuonCleanedAntiEleMVAVTight.push_back(iTau->tauID("againstElectronVTightMVA6"));
+       } // end for loop on taus
+   } // end if pTauMuonCleaned->size()>0
+
+   // --- prepare tau vector (electron cleaned) ---
+   if (pTauElectronCleaned->size()>0)
+   {
+       for(edm::View<pat::Tau>::const_iterator iTau=pTauElectronCleaned->begin(); iTau!=pTauElectronCleaned->end(); iTau++)
+       {
+           recoTauElectronCleanedPt.push_back(iTau->pt());
+           recoTauElectronCleanedEta.push_back(iTau->eta());
+           recoTauElectronCleanedPhi.push_back(iTau->phi());
+           recoTauElectronCleanedEnergy.push_back(iTau->energy());
+           recoTauElectronCleanedPDGId.push_back(iTau->pdgId());
+           recoTauElectronCleanedDecayMode.push_back(iTau->decayMode());
+           recoTauElectronCleanedDecayModeFinding.push_back(iTau->tauID("decayModeFinding"));
+           recoTauElectronCleanedDecayModeFindingNewDMs.push_back(iTau->tauID("decayModeFindingNewDMs"));
+           recoTauElectronCleanedRefToMuon.push_back(0);
+           recoTauElectronCleanedRefToElectron.push_back(0);
+
+           if (iTau->isTauIDAvailable("byIsolationMVArun2017v2DBoldDMwLTraw2017"))
+           {
+               recoTauElectronCleanedIsoMVArawValue.push_back(iTau->tauID("byIsolationMVArun2017v2DBoldDMwLTraw2017"));
+               recoTauElectronCleanedIsoMVAVVLoose.push_back(iTau->tauID("byVVLooseIsolationMVArun2017v2DBoldDMwLT2017"));
+               recoTauElectronCleanedIsoMVAVLoose.push_back(iTau->tauID("byVLooseIsolationMVArun2017v2DBoldDMwLT2017"));
+               recoTauElectronCleanedIsoMVALoose.push_back(iTau->tauID("byLooseIsolationMVArun2017v2DBoldDMwLT2017"));
+               recoTauElectronCleanedIsoMVAMedium.push_back(iTau->tauID("byMediumIsolationMVArun2017v2DBoldDMwLT2017"));
+               recoTauElectronCleanedIsoMVATight.push_back(iTau->tauID("byTightIsolationMVArun2017v2DBoldDMwLT2017"));
+               recoTauElectronCleanedIsoMVAVTight.push_back(iTau->tauID("byVTightIsolationMVArun2017v2DBoldDMwLT2017"));
+               recoTauElectronCleanedIsoMVAVVTight.push_back(iTau->tauID("byVVTightIsolationMVArun2017v2DBoldDMwLT2017"));
+           } // end if TauMVA ID available
+
+           if (iTau->isTauIDAvailable("byDeepTau2017v2p1ElectronCleanedVSjetraw"))
+           {
+               recoTauElectronCleanedDeepVSeraw.push_back(iTau->tauID("byDeepTau2017v2p1ElectronCleanedVSeraw"));
+               recoTauElectronCleanedDeepVSjetraw.push_back(iTau->tauID("byDeepTau2017v2p1ElectronCleanedVSjetraw"));
+               recoTauElectronCleanedDeepVSmuraw.push_back(iTau->tauID("byDeepTau2017v2p1ElectronCleanedVSmuraw"));
+
+               recoTauElectronCleanedDeepVSeLoose.push_back(iTau->tauID("byLooseDeepTau2017v2p1ElectronCleanedVSe"));
+               recoTauElectronCleanedDeepVSjetLoose.push_back(iTau->tauID("byLooseDeepTau2017v2p1ElectronCleanedVSjet"));
+               recoTauElectronCleanedDeepVSmuLoose.push_back(iTau->tauID("byLooseDeepTau2017v2p1ElectronCleanedVSmu"));
+
+               recoTauElectronCleanedDeepVSeMedium.push_back(iTau->tauID("byMediumDeepTau2017v2p1ElectronCleanedVSe"));
+               recoTauElectronCleanedDeepVSjetMedium.push_back(iTau->tauID("byMediumDeepTau2017v2p1ElectronCleanedVSjet"));
+               recoTauElectronCleanedDeepVSmuMedium.push_back(iTau->tauID("byMediumDeepTau2017v2p1ElectronCleanedVSmu"));
+
+               recoTauElectronCleanedDeepVSeTight.push_back(iTau->tauID("byTightDeepTau2017v2p1ElectronCleanedVSe"));
+               recoTauElectronCleanedDeepVSjetTight.push_back(iTau->tauID("byTightDeepTau2017v2p1ElectronCleanedVSjet"));
+               recoTauElectronCleanedDeepVSmuTight.push_back(iTau->tauID("byTightDeepTau2017v2p1ElectronCleanedVSmu"));
+
+               recoTauElectronCleanedDeepVSeVLoose.push_back(iTau->tauID("byVLooseDeepTau2017v2p1ElectronCleanedVSe"));
+               recoTauElectronCleanedDeepVSjetVLoose.push_back(iTau->tauID("byVLooseDeepTau2017v2p1ElectronCleanedVSjet"));
+               recoTauElectronCleanedDeepVSmuVLoose.push_back(iTau->tauID("byVLooseDeepTau2017v2p1ElectronCleanedVSmu"));
+
+               recoTauElectronCleanedDeepVSeVTight.push_back(iTau->tauID("byVTightDeepTau2017v2p1ElectronCleanedVSe"));
+               recoTauElectronCleanedDeepVSjetVTight.push_back(iTau->tauID("byVTightDeepTau2017v2p1ElectronCleanedVSjet"));
+
+               recoTauElectronCleanedDeepVSeVVLoose.push_back(iTau->tauID("byVVLooseDeepTau2017v2p1ElectronCleanedVSe"));
+               recoTauElectronCleanedDeepVSjetVVLoose.push_back(iTau->tauID("byVVLooseDeepTau2017v2p1ElectronCleanedVSjet"));
+
+               recoTauElectronCleanedDeepVSeVVTight.push_back(iTau->tauID("byVVTightDeepTau2017v2p1ElectronCleanedVSe"));
+               recoTauElectronCleanedDeepVSjetVVTight.push_back(iTau->tauID("byVVTightDeepTau2017v2p1ElectronCleanedVSjet"));
+
+               recoTauElectronCleanedDeepVSeVVVLoose.push_back(iTau->tauID("byVVVLooseDeepTau2017v2p1ElectronCleanedVSe"));
+               recoTauElectronCleanedDeepVSjetVVVLoose.push_back(iTau->tauID("byVVVLooseDeepTau2017v2p1ElectronCleanedVSjet"));
+           } // end if DeepTau ID available
+
+           recoTauElectronCleanedAntiMuMVALoose.push_back(iTau->tauID("againstMuonLoose3"));
+           recoTauElectronCleanedAntiMuMVATight.push_back(iTau->tauID("againstMuonTight3"));
+       
+           recoTauElectronCleanedAntiEleMVArawValue.push_back(iTau->tauID("againstElectronMVA6Raw"));
+           recoTauElectronCleanedAntiEleMVAVLoose.push_back(iTau->tauID("againstElectronVLooseMVA6"));
+           recoTauElectronCleanedAntiEleMVALoose.push_back(iTau->tauID("againstElectronLooseMVA6"));
+           recoTauElectronCleanedAntiEleMVAMedium.push_back(iTau->tauID("againstElectronMediumMVA6"));
+           recoTauElectronCleanedAntiEleMVATight.push_back(iTau->tauID("againstElectronTightMVA6"));
+           recoTauElectronCleanedAntiEleMVAVTight.push_back(iTau->tauID("againstElectronVTightMVA6"));
+       } // end for loop on taus
+   } // end if pTauElectronCleaned->size()>0
 
    // --- prepare for the common source particle reference records for muon/electron candidates
    if (pElectron->size()>0 && pMu->size()>0)
@@ -932,6 +1224,52 @@ DiMuDiTauAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
        } // end for loop on tau candidates
    } // end if pMu->size()>0 && pTau->size()>0
 
+   // --- prepare muon VS tau (muon cleaned) reference for overlapped mu/tau candidates
+   if (pMu->size()>0 && pTauMuonCleaned->size()>0)
+   {
+       int refTauValue = 1;
+       int countTau = 0;
+       for (edm::View<pat::Tau>::const_iterator iTau=pTauMuonCleaned->begin(); iTau!=pTauMuonCleaned->end(); iTau++)
+       {
+           bool findMatchedTau = false;
+
+           int refMuonValue = refTauValue;
+           int countMuon = 0;
+           for (edm::View<pat::Muon>::const_iterator iMuon=pMu->begin(); iMuon!=pMu->end(); iMuon++)
+           {
+               bool findMatchedMu = false;
+               for (unsigned int indexMu = 0; indexMu < iMuon->numberOfSourceCandidatePtrs(); indexMu++)
+               {
+                   for (unsigned int indexTau = 0; indexTau < iTau->numberOfSourceCandidatePtrs(); indexTau++)
+                   {
+                       if (iMuon->sourceCandidatePtr(indexMu).key() == iTau->sourceCandidatePtr(indexTau).key())
+                       {
+                           findMatchedMu = true;
+                           findMatchedTau = true;
+                           break;
+                       } // end if the muon source and tau source have the same key
+                   } // end for loop on tau source particles
+                   if (findMatchedMu) break;
+               } // end for loop on mu source particles
+
+               if (findMatchedMu)
+               {
+                   recoMuonRefToTauMuonCleaned.at(countMuon) = refMuonValue;
+               } // end if findMatchedMu
+
+               countMuon += 1;
+           } // end for loop on muon candidates
+
+           if (findMatchedTau)
+           {
+               recoTauMuonCleanedRefToMuon.at(countTau) = refTauValue;
+               refTauValue += 1;
+           } // end if findMatchedTau
+
+           countTau += 1;
+       } // end for loop on tau candidates
+   } // end if pMu->size()>0 && pTauMuonCleaned->size()>0
+
    // --- prepare electron VS tau reference for overlapped ele/tau candidates
    if (pElectron->size()>0 && pTau->size()>0)
    {
@@ -977,6 +1315,52 @@ DiMuDiTauAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
            countTau += 1;
        } // end for loop on tau candidates
    } // end if pElectron->size()>0 && pTau->size()>0
+
+   // --- prepare electron VS tau (electron cleaned) reference for overlapped ele/tau candidates
+   if (pElectron->size()>0 && pTauElectronCleaned->size()>0)
+   {
+       int refTauValue = 1;
+       int countTau = 0;
+       for (edm::View<pat::Tau>::const_iterator iTau=pTauElectronCleaned->begin(); iTau!=pTauElectronCleaned->end(); iTau++)
+       {
+           bool findMatchedTau = false;
+
+           int refElectronValue = refTauValue;
+           int countElectron = 0;
+           for(edm::View<pat::Electron>::const_iterator iElectron=pElectron->begin(); iElectron!=pElectron->end(); iElectron++)
+           {
+               bool findMatchedEle = false;
+               for (unsigned int indexTau = 0; indexTau < iTau->numberOfSourceCandidatePtrs(); indexTau++)
+               {
+                   for (unsigned int indexEle = 0; indexEle < iElectron->numberOfSourceCandidatePtrs(); indexEle++)
+                   {
+                       if (iElectron->sourceCandidatePtr(indexEle).key() == iTau->sourceCandidatePtr(indexTau).key())
+                       {
+                           findMatchedEle = true;
+                           findMatchedTau = true;
+                           break;
+                       } // end if find the same source of electron and tau
+                   } // end for loop on electron source particles
+                   if (findMatchedEle) break;
+               } // end for loop on tau source particles
+
+               if (findMatchedEle)
+               {
+                   recoElectronRefToTauElectronCleaned.at(countElectron) = refElectronValue;
+               } // end if findMatchedEle
+
+               countElectron += 1;
+           } // end for loop on electron candidates
+
+           if (findMatchedTau)
+           {
+               recoTauElectronCleanedRefToElectron.at(countTau) = refTauValue;
+               refTauValue += 1;
+           } // end if findMatchedTau
+
+           countTau += 1;
+       } // end for loop on tau candidates
+   } // end if pElectron->size()>0 && pTauElectronCleaned->size()>0
 
    // --- prepare jet vector ---
    if (pJet->size()>0)
@@ -1030,6 +1414,7 @@ DiMuDiTauAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
    recoMuonTriggerFlag.clear();
    recoMuonRefToElectron.clear();
    recoMuonRefToTau.clear();
+   recoMuonRefToTauMuonCleaned.clear();
    recoMuonIdLoose.clear();
    recoMuonIdMedium.clear();
    recoMuonIdTight.clear();
@@ -1057,6 +1442,7 @@ DiMuDiTauAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
    recoElectronEnergySigmaDown.clear();
    recoElectronRefToMuon.clear();
    recoElectronRefToTau.clear();
+   recoElectronRefToTauElectronCleaned.clear();
 
    // --- reconstructed taus ---
    recoTauPt.clear();
@@ -1120,6 +1506,132 @@ DiMuDiTauAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
 
    recoTauDeepVSeVVVLoose.clear();
    recoTauDeepVSjetVVVLoose.clear();
+
+   // --- reconstructed taus (muon cleaned) ---
+   recoTauMuonCleanedPt.clear();
+   recoTauMuonCleanedEta.clear();
+   recoTauMuonCleanedPhi.clear();
+   recoTauMuonCleanedEnergy.clear();
+   recoTauMuonCleanedPDGId.clear();
+   recoTauMuonCleanedDecayMode.clear();
+   recoTauMuonCleanedDecayModeFinding.clear();
+   recoTauMuonCleanedDecayModeFindingNewDMs.clear();
+   recoTauMuonCleanedRefToMuon.clear();
+   recoTauMuonCleanedRefToElectron.clear();
+
+   recoTauMuonCleanedIsoMVArawValue.clear();
+   recoTauMuonCleanedIsoMVAVVLoose.clear();
+   recoTauMuonCleanedIsoMVAVLoose.clear();
+   recoTauMuonCleanedIsoMVALoose.clear();
+   recoTauMuonCleanedIsoMVAMedium.clear();
+   recoTauMuonCleanedIsoMVATight.clear();
+   recoTauMuonCleanedIsoMVAVTight.clear();
+   recoTauMuonCleanedIsoMVAVVTight.clear();
+   
+   recoTauMuonCleanedAntiMuMVALoose.clear();
+   recoTauMuonCleanedAntiMuMVATight.clear();
+
+   recoTauMuonCleanedAntiEleMVArawValue.clear();
+   recoTauMuonCleanedAntiEleMVAVLoose.clear();
+   recoTauMuonCleanedAntiEleMVALoose.clear();
+   recoTauMuonCleanedAntiEleMVAMedium.clear();
+   recoTauMuonCleanedAntiEleMVATight.clear();
+   recoTauMuonCleanedAntiEleMVAVTight.clear();
+
+   recoTauMuonCleanedDeepVSeraw.clear();
+   recoTauMuonCleanedDeepVSjetraw.clear();
+   recoTauMuonCleanedDeepVSmuraw.clear();
+ 
+   recoTauMuonCleanedDeepVSeLoose.clear();
+   recoTauMuonCleanedDeepVSjetLoose.clear();
+   recoTauMuonCleanedDeepVSmuLoose.clear();
+
+   recoTauMuonCleanedDeepVSeMedium.clear();
+   recoTauMuonCleanedDeepVSjetMedium.clear();
+   recoTauMuonCleanedDeepVSmuMedium.clear();
+
+   recoTauMuonCleanedDeepVSeTight.clear();
+   recoTauMuonCleanedDeepVSjetTight.clear();
+   recoTauMuonCleanedDeepVSmuTight.clear();
+
+   recoTauMuonCleanedDeepVSeVLoose.clear();
+   recoTauMuonCleanedDeepVSjetVLoose.clear();
+   recoTauMuonCleanedDeepVSmuVLoose.clear();
+
+   recoTauMuonCleanedDeepVSeVTight.clear();
+   recoTauMuonCleanedDeepVSjetVTight.clear();
+
+   recoTauMuonCleanedDeepVSeVVLoose.clear();
+   recoTauMuonCleanedDeepVSjetVVLoose.clear();
+
+   recoTauMuonCleanedDeepVSeVVTight.clear();
+   recoTauMuonCleanedDeepVSjetVVTight.clear();
+
+   recoTauMuonCleanedDeepVSeVVVLoose.clear();
+   recoTauMuonCleanedDeepVSjetVVVLoose.clear();
+
+   // --- reconstructed taus (electron cleaned) ---
+   recoTauElectronCleanedPt.clear();
+   recoTauElectronCleanedEta.clear();
+   recoTauElectronCleanedPhi.clear();
+   recoTauElectronCleanedEnergy.clear();
+   recoTauElectronCleanedPDGId.clear();
+   recoTauElectronCleanedDecayMode.clear();
+   recoTauElectronCleanedDecayModeFinding.clear();
+   recoTauElectronCleanedDecayModeFindingNewDMs.clear();
+   recoTauElectronCleanedRefToMuon.clear();
+   recoTauElectronCleanedRefToElectron.clear();
+
+   recoTauElectronCleanedIsoMVArawValue.clear();
+   recoTauElectronCleanedIsoMVAVVLoose.clear();
+   recoTauElectronCleanedIsoMVAVLoose.clear();
+   recoTauElectronCleanedIsoMVALoose.clear();
+   recoTauElectronCleanedIsoMVAMedium.clear();
+   recoTauElectronCleanedIsoMVATight.clear();
+   recoTauElectronCleanedIsoMVAVTight.clear();
+   recoTauElectronCleanedIsoMVAVVTight.clear();
+   
+   recoTauElectronCleanedAntiMuMVALoose.clear();
+   recoTauElectronCleanedAntiMuMVATight.clear();
+
+   recoTauElectronCleanedAntiEleMVArawValue.clear();
+   recoTauElectronCleanedAntiEleMVAVLoose.clear();
+   recoTauElectronCleanedAntiEleMVALoose.clear();
+   recoTauElectronCleanedAntiEleMVAMedium.clear();
+   recoTauElectronCleanedAntiEleMVATight.clear();
+   recoTauElectronCleanedAntiEleMVAVTight.clear();
+
+   recoTauElectronCleanedDeepVSeraw.clear();
+   recoTauElectronCleanedDeepVSjetraw.clear();
+   recoTauElectronCleanedDeepVSmuraw.clear();
+ 
+   recoTauElectronCleanedDeepVSeLoose.clear();
+   recoTauElectronCleanedDeepVSjetLoose.clear();
+   recoTauElectronCleanedDeepVSmuLoose.clear();
+
+   recoTauElectronCleanedDeepVSeMedium.clear();
+   recoTauElectronCleanedDeepVSjetMedium.clear();
+   recoTauElectronCleanedDeepVSmuMedium.clear();
+
+   recoTauElectronCleanedDeepVSeTight.clear();
+   recoTauElectronCleanedDeepVSjetTight.clear();
+   recoTauElectronCleanedDeepVSmuTight.clear();
+
+   recoTauElectronCleanedDeepVSeVLoose.clear();
+   recoTauElectronCleanedDeepVSjetVLoose.clear();
+   recoTauElectronCleanedDeepVSmuVLoose.clear();
+
+   recoTauElectronCleanedDeepVSeVTight.clear();
+   recoTauElectronCleanedDeepVSjetVTight.clear();
+
+   recoTauElectronCleanedDeepVSeVVLoose.clear();
+   recoTauElectronCleanedDeepVSjetVVLoose.clear();
+
+   recoTauElectronCleanedDeepVSeVVTight.clear();
+   recoTauElectronCleanedDeepVSjetVVTight.clear();
+
+   recoTauElectronCleanedDeepVSeVVVLoose.clear();
+   recoTauElectronCleanedDeepVSjetVVVLoose.clear();
 
    // --- reconstructed jets ---
    recoJetPt.clear();
@@ -1328,6 +1840,7 @@ DiMuDiTauAnalyzer::beginJob()
     objectTree->Branch("recoMuonTriggerFlag", &recoMuonTriggerFlag);
     objectTree->Branch("recoMuonRefToElectron", &recoMuonRefToElectron);
     objectTree->Branch("recoMuonRefToTau", &recoMuonRefToTau);
+    objectTree->Branch("recoMuonRefToTauMuonCleaned", &recoMuonRefToTauMuonCleaned);
     objectTree->Branch("recoMuonIdLoose", &recoMuonIdLoose);
     objectTree->Branch("recoMuonIdMedium", &recoMuonIdMedium);
     objectTree->Branch("recoMuonIdTight", &recoMuonIdTight);
@@ -1354,6 +1867,7 @@ DiMuDiTauAnalyzer::beginJob()
     objectTree->Branch("recoElectronEnergySigmaDown", &recoElectronEnergySigmaDown);
     objectTree->Branch("recoElectronRefToMuon", &recoElectronRefToMuon);
     objectTree->Branch("recoElectronRefToTau", &recoElectronRefToTau);
+    objectTree->Branch("recoElectronRefToTauElectronCleaned", &recoElectronRefToTauElectronCleaned);
 
     objectTree->Branch("recoTauPt", &recoTauPt);
     objectTree->Branch("recoTauEta", &recoTauEta);
@@ -1416,6 +1930,130 @@ DiMuDiTauAnalyzer::beginJob()
     objectTree->Branch("recoTauAntiEleMVAMedium", &recoTauAntiEleMVAMedium);
     objectTree->Branch("recoTauAntiEleMVATight", &recoTauAntiEleMVATight);
     objectTree->Branch("recoTauAntiEleMVAVTight", &recoTauAntiEleMVAVTight);
+
+    objectTree->Branch("recoTauMuonCleanedPt", &recoTauMuonCleanedPt);
+    objectTree->Branch("recoTauMuonCleanedEta", &recoTauMuonCleanedEta);
+    objectTree->Branch("recoTauMuonCleanedPhi", &recoTauMuonCleanedPhi);
+    objectTree->Branch("recoTauMuonCleanedEnergy", &recoTauMuonCleanedEnergy);
+    objectTree->Branch("recoTauMuonCleanedPDGId", &recoTauMuonCleanedPDGId);
+    objectTree->Branch("recoTauMuonCleanedDecayMode", &recoTauMuonCleanedDecayMode);
+    objectTree->Branch("recoTauMuonCleanedDecayModeFinding", &recoTauMuonCleanedDecayModeFinding);
+    objectTree->Branch("recoTauMuonCleanedDecayModeFindingNewDMs", &recoTauMuonCleanedDecayModeFindingNewDMs);
+    objectTree->Branch("recoTauMuonCleanedRefToMuon", &recoTauMuonCleanedRefToMuon);
+    objectTree->Branch("recoTauMuonCleanedRefToElectron", &recoTauMuonCleanedRefToElectron);
+
+    objectTree->Branch("recoTauMuonCleanedDeepVSeraw", &recoTauMuonCleanedDeepVSeraw);
+    objectTree->Branch("recoTauMuonCleanedDeepVSjetraw", &recoTauMuonCleanedDeepVSjetraw);
+    objectTree->Branch("recoTauMuonCleanedDeepVSmuraw", &recoTauMuonCleanedDeepVSmuraw);
+
+    objectTree->Branch("recoTauMuonCleanedDeepVSeLoose", &recoTauMuonCleanedDeepVSeLoose);
+    objectTree->Branch("recoTauMuonCleanedDeepVSjetLoose", &recoTauMuonCleanedDeepVSjetLoose);
+    objectTree->Branch("recoTauMuonCleanedDeepVSmuLoose", &recoTauMuonCleanedDeepVSmuLoose);
+
+    objectTree->Branch("recoTauMuonCleanedDeepVSeMedium", &recoTauMuonCleanedDeepVSeMedium);
+    objectTree->Branch("recoTauMuonCleanedDeepVSjetMedium", &recoTauMuonCleanedDeepVSjetMedium);
+    objectTree->Branch("recoTauMuonCleanedDeepVSmuMedium", &recoTauMuonCleanedDeepVSmuMedium);
+
+    objectTree->Branch("recoTauMuonCleanedDeepVSeTight", &recoTauMuonCleanedDeepVSeTight);
+    objectTree->Branch("recoTauMuonCleanedDeepVSjetTight", &recoTauMuonCleanedDeepVSjetTight);
+    objectTree->Branch("recoTauMuonCleanedDeepVSmuTight", &recoTauMuonCleanedDeepVSmuTight);
+
+    objectTree->Branch("recoTauMuonCleanedDeepVSeVLoose", &recoTauMuonCleanedDeepVSeVLoose);
+    objectTree->Branch("recoTauMuonCleanedDeepVSjetVLoose", &recoTauMuonCleanedDeepVSjetVLoose);
+    objectTree->Branch("recoTauMuonCleanedDeepVSmuVLoose", &recoTauMuonCleanedDeepVSmuVLoose);
+
+    objectTree->Branch("recoTauMuonCleanedDeepVSeVTight", &recoTauMuonCleanedDeepVSeVTight);
+    objectTree->Branch("recoTauMuonCleanedDeepVSjetVTight", &recoTauMuonCleanedDeepVSjetVTight);
+
+    objectTree->Branch("recoTauMuonCleanedDeepVSeVVLoose", &recoTauMuonCleanedDeepVSeVVLoose);
+    objectTree->Branch("recoTauMuonCleanedDeepVSjetVVLoose", &recoTauMuonCleanedDeepVSjetVVLoose);
+
+    objectTree->Branch("recoTauMuonCleanedDeepVSeVVTight", &recoTauMuonCleanedDeepVSeVVTight);
+    objectTree->Branch("recoTauMuonCleanedDeepVSjetVVTight", &recoTauMuonCleanedDeepVSjetVVTight);
+
+    objectTree->Branch("recoTauMuonCleanedDeepVSeVVVLoose", &recoTauMuonCleanedDeepVSeVVVLoose);
+    objectTree->Branch("recoTauMuonCleanedDeepVSjetVVVLoose", &recoTauMuonCleanedDeepVSjetVVVLoose);
+
+    objectTree->Branch("recoTauMuonCleanedIsoMVArawValue", &recoTauMuonCleanedIsoMVArawValue);
+    objectTree->Branch("recoTauMuonCleanedIsoMVAVVLoose", &recoTauMuonCleanedIsoMVAVVLoose);
+    objectTree->Branch("recoTauMuonCleanedIsoMVAVLoose", &recoTauMuonCleanedIsoMVAVLoose);
+    objectTree->Branch("recoTauMuonCleanedIsoMVALoose", &recoTauMuonCleanedIsoMVALoose);
+    objectTree->Branch("recoTauMuonCleanedIsoMVAMedium", &recoTauMuonCleanedIsoMVAMedium);
+    objectTree->Branch("recoTauMuonCleanedIsoMVATight", &recoTauMuonCleanedIsoMVATight);
+    objectTree->Branch("recoTauMuonCleanedIsoMVAVTight", &recoTauMuonCleanedIsoMVAVTight);
+    objectTree->Branch("recoTauMuonCleanedIsoMVAVVTight", &recoTauMuonCleanedIsoMVAVVTight);
+
+    objectTree->Branch("recoTauMuonCleanedAntiMuMVALoose", &recoTauMuonCleanedAntiMuMVALoose);
+    objectTree->Branch("recoTauMuonCleanedAntiMuMVATight", &recoTauMuonCleanedAntiMuMVATight);
+    
+    objectTree->Branch("recoTauMuonCleanedAntiEleMVArawValue", &recoTauMuonCleanedAntiEleMVArawValue);
+    objectTree->Branch("recoTauMuonCleanedAntiEleMVAVLoose", &recoTauMuonCleanedAntiEleMVAVLoose);
+    objectTree->Branch("recoTauMuonCleanedAntiEleMVALoose", &recoTauMuonCleanedAntiEleMVALoose);
+    objectTree->Branch("recoTauMuonCleanedAntiEleMVAMedium", &recoTauMuonCleanedAntiEleMVAMedium);
+    objectTree->Branch("recoTauMuonCleanedAntiEleMVATight", &recoTauMuonCleanedAntiEleMVATight);
+    objectTree->Branch("recoTauMuonCleanedAntiEleMVAVTight", &recoTauMuonCleanedAntiEleMVAVTight);
+
+    objectTree->Branch("recoTauElectronCleanedPt", &recoTauElectronCleanedPt);
+    objectTree->Branch("recoTauElectronCleanedEta", &recoTauElectronCleanedEta);
+    objectTree->Branch("recoTauElectronCleanedPhi", &recoTauElectronCleanedPhi);
+    objectTree->Branch("recoTauElectronCleanedEnergy", &recoTauElectronCleanedEnergy);
+    objectTree->Branch("recoTauElectronCleanedPDGId", &recoTauElectronCleanedPDGId);
+    objectTree->Branch("recoTauElectronCleanedDecayMode", &recoTauElectronCleanedDecayMode);
+    objectTree->Branch("recoTauElectronCleanedDecayModeFinding", &recoTauElectronCleanedDecayModeFinding);
+    objectTree->Branch("recoTauElectronCleanedDecayModeFindingNewDMs", &recoTauElectronCleanedDecayModeFindingNewDMs);
+    objectTree->Branch("recoTauElectronCleanedRefToMuon", &recoTauElectronCleanedRefToMuon);
+    objectTree->Branch("recoTauElectronCleanedRefToElectron", &recoTauElectronCleanedRefToElectron);
+
+    objectTree->Branch("recoTauElectronCleanedDeepVSeraw", &recoTauElectronCleanedDeepVSeraw);
+    objectTree->Branch("recoTauElectronCleanedDeepVSjetraw", &recoTauElectronCleanedDeepVSjetraw);
+    objectTree->Branch("recoTauElectronCleanedDeepVSmuraw", &recoTauElectronCleanedDeepVSmuraw);
+
+    objectTree->Branch("recoTauElectronCleanedDeepVSeLoose", &recoTauElectronCleanedDeepVSeLoose);
+    objectTree->Branch("recoTauElectronCleanedDeepVSjetLoose", &recoTauElectronCleanedDeepVSjetLoose);
+    objectTree->Branch("recoTauElectronCleanedDeepVSmuLoose", &recoTauElectronCleanedDeepVSmuLoose);
+
+    objectTree->Branch("recoTauElectronCleanedDeepVSeMedium", &recoTauElectronCleanedDeepVSeMedium);
+    objectTree->Branch("recoTauElectronCleanedDeepVSjetMedium", &recoTauElectronCleanedDeepVSjetMedium);
+    objectTree->Branch("recoTauElectronCleanedDeepVSmuMedium", &recoTauElectronCleanedDeepVSmuMedium);
+
+    objectTree->Branch("recoTauElectronCleanedDeepVSeTight", &recoTauElectronCleanedDeepVSeTight);
+    objectTree->Branch("recoTauElectronCleanedDeepVSjetTight", &recoTauElectronCleanedDeepVSjetTight);
+    objectTree->Branch("recoTauElectronCleanedDeepVSmuTight", &recoTauElectronCleanedDeepVSmuTight);
+
+    objectTree->Branch("recoTauElectronCleanedDeepVSeVLoose", &recoTauElectronCleanedDeepVSeVLoose);
+    objectTree->Branch("recoTauElectronCleanedDeepVSjetVLoose", &recoTauElectronCleanedDeepVSjetVLoose);
+    objectTree->Branch("recoTauElectronCleanedDeepVSmuVLoose", &recoTauElectronCleanedDeepVSmuVLoose);
+
+    objectTree->Branch("recoTauElectronCleanedDeepVSeVTight", &recoTauElectronCleanedDeepVSeVTight);
+    objectTree->Branch("recoTauElectronCleanedDeepVSjetVTight", &recoTauElectronCleanedDeepVSjetVTight);
+
+    objectTree->Branch("recoTauElectronCleanedDeepVSeVVLoose", &recoTauElectronCleanedDeepVSeVVLoose);
+    objectTree->Branch("recoTauElectronCleanedDeepVSjetVVLoose", &recoTauElectronCleanedDeepVSjetVVLoose);
+
+    objectTree->Branch("recoTauElectronCleanedDeepVSeVVTight", &recoTauElectronCleanedDeepVSeVVTight);
+    objectTree->Branch("recoTauElectronCleanedDeepVSjetVVTight", &recoTauElectronCleanedDeepVSjetVVTight);
+
+    objectTree->Branch("recoTauElectronCleanedDeepVSeVVVLoose", &recoTauElectronCleanedDeepVSeVVVLoose);
+    objectTree->Branch("recoTauElectronCleanedDeepVSjetVVVLoose", &recoTauElectronCleanedDeepVSjetVVVLoose);
+
+    objectTree->Branch("recoTauElectronCleanedIsoMVArawValue", &recoTauElectronCleanedIsoMVArawValue);
+    objectTree->Branch("recoTauElectronCleanedIsoMVAVVLoose", &recoTauElectronCleanedIsoMVAVVLoose);
+    objectTree->Branch("recoTauElectronCleanedIsoMVAVLoose", &recoTauElectronCleanedIsoMVAVLoose);
+    objectTree->Branch("recoTauElectronCleanedIsoMVALoose", &recoTauElectronCleanedIsoMVALoose);
+    objectTree->Branch("recoTauElectronCleanedIsoMVAMedium", &recoTauElectronCleanedIsoMVAMedium);
+    objectTree->Branch("recoTauElectronCleanedIsoMVATight", &recoTauElectronCleanedIsoMVATight);
+    objectTree->Branch("recoTauElectronCleanedIsoMVAVTight", &recoTauElectronCleanedIsoMVAVTight);
+    objectTree->Branch("recoTauElectronCleanedIsoMVAVVTight", &recoTauElectronCleanedIsoMVAVVTight);
+
+    objectTree->Branch("recoTauElectronCleanedAntiMuMVALoose", &recoTauElectronCleanedAntiMuMVALoose);
+    objectTree->Branch("recoTauElectronCleanedAntiMuMVATight", &recoTauElectronCleanedAntiMuMVATight);
+    
+    objectTree->Branch("recoTauElectronCleanedAntiEleMVArawValue", &recoTauElectronCleanedAntiEleMVArawValue);
+    objectTree->Branch("recoTauElectronCleanedAntiEleMVAVLoose", &recoTauElectronCleanedAntiEleMVAVLoose);
+    objectTree->Branch("recoTauElectronCleanedAntiEleMVALoose", &recoTauElectronCleanedAntiEleMVALoose);
+    objectTree->Branch("recoTauElectronCleanedAntiEleMVAMedium", &recoTauElectronCleanedAntiEleMVAMedium);
+    objectTree->Branch("recoTauElectronCleanedAntiEleMVATight", &recoTauElectronCleanedAntiEleMVATight);
+    objectTree->Branch("recoTauElectronCleanedAntiEleMVAVTight", &recoTauElectronCleanedAntiEleMVAVTight);
 
     objectTree->Branch("recoJetPt", &recoJetPt);
     objectTree->Branch("recoJetEta", &recoJetEta);
