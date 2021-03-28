@@ -74,6 +74,14 @@ TauElectronCleanedCandSelector = cms.EDFilter("TauCandSelector",
         etaMax = cms.double(2.4),
 )
 
+TauBoostedCandSelector = cms.EDFilter("TauCandSelector",
+        tauTag = cms.InputTag('slimmedTausBoostedNewID'),
+        tauDiscriminatorTag = cms.vstring('decayModeFindingNewDMs'),
+        passDiscriminator = cms.bool(False),
+        pTMin = cms.double(8.0),
+        etaMax = cms.double(2.4),
+)
+
 DeepDiTauProducer = cms.EDProducer("DeepDiTauProducer",
         slimmedJetTag = cms.InputTag('slimmedJets'),
         DeepDiTauConfiguration = cms.PSet(
@@ -106,6 +114,7 @@ DiMuDiTauAnalyzer = cms.EDAnalyzer('DiMuDiTauAnalyzer',
         TauTag = cms.InputTag("TauCandSelector"),
         TauMuonCleanedTag = cms.InputTag("TauMuonCleanedCandSelector"),
         TauElectronCleanedTag = cms.InputTag("TauElectronCleanedCandSelector"),
+        TauBoostedTag = cms.InputTag("TauBoostedCandSelector"),
         JetTag = cms.InputTag("JetIdEmbedder"),
         MetTag = cms.InputTag("slimmedMETs"),
         VertexTag = cms.InputTag("offlineSlimmedPrimaryVertices"),

@@ -80,6 +80,7 @@ class DiMuDiTauAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>
       edm::EDGetTokenT<edm::View<pat::Tau>> TauTag;
       edm::EDGetTokenT<edm::View<pat::Tau>> TauMuonCleanedTag;
       edm::EDGetTokenT<edm::View<pat::Tau>> TauElectronCleanedTag;
+      edm::EDGetTokenT<edm::View<pat::Tau>> TauBoostedTag;
       edm::EDGetTokenT<edm::View<pat::Jet>> JetTag;
       edm::EDGetTokenT<edm::View<pat::MET>> MetTag;
       edm::EDGetTokenT<edm::View<reco::Vertex>> VertexTag;
@@ -333,6 +334,70 @@ class DiMuDiTauAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>
       vector<int> recoTauElectronCleanedRefToMuon;
       vector<int> recoTauElectronCleanedRefToElectron;
 
+      // --- reconstructed taus boosted ---
+      vector<float> recoTauBoostedPt;
+      vector<float> recoTauBoostedEta;
+      vector<float> recoTauBoostedPhi;
+      vector<float> recoTauBoostedEnergy;
+      vector<int> recoTauBoostedPDGId;
+      vector<float> recoTauBoostedDecayMode;
+      vector<float> recoTauBoostedDecayModeFinding;
+      vector<float> recoTauBoostedDecayModeFindingNewDMs;
+      vector<float> recoTauBoostedIsoMVArawValue;
+      vector<float> recoTauBoostedIsoMVAVVLoose;
+      vector<float> recoTauBoostedIsoMVAVLoose;
+      vector<float> recoTauBoostedIsoMVALoose;
+      vector<float> recoTauBoostedIsoMVAMedium;
+      vector<float> recoTauBoostedIsoMVATight;
+      vector<float> recoTauBoostedIsoMVAVTight;
+      vector<float> recoTauBoostedIsoMVAVVTight;
+      
+      vector<float> recoTauBoostedAntiMuMVALoose;
+      vector<float> recoTauBoostedAntiMuMVATight;
+
+      vector<float> recoTauBoostedAntiEleMVArawValue;
+      vector<float> recoTauBoostedAntiEleMVAVLoose;
+      vector<float> recoTauBoostedAntiEleMVALoose;
+      vector<float> recoTauBoostedAntiEleMVAMedium;
+      vector<float> recoTauBoostedAntiEleMVATight;
+      vector<float> recoTauBoostedAntiEleMVAVTight;
+
+      // *** deep tau ID variables ***
+      vector<float> recoTauBoostedDeepVSeraw;
+      vector<float> recoTauBoostedDeepVSjetraw;
+      vector<float> recoTauBoostedDeepVSmuraw;
+ 
+      vector<float> recoTauBoostedDeepVSeLoose;
+      vector<float> recoTauBoostedDeepVSjetLoose;
+      vector<float> recoTauBoostedDeepVSmuLoose;
+
+      vector<float> recoTauBoostedDeepVSeMedium;
+      vector<float> recoTauBoostedDeepVSjetMedium;
+      vector<float> recoTauBoostedDeepVSmuMedium;
+
+      vector<float> recoTauBoostedDeepVSeTight;
+      vector<float> recoTauBoostedDeepVSjetTight;
+      vector<float> recoTauBoostedDeepVSmuTight;
+
+      vector<float> recoTauBoostedDeepVSeVLoose;
+      vector<float> recoTauBoostedDeepVSjetVLoose;
+      vector<float> recoTauBoostedDeepVSmuVLoose;
+
+      vector<float> recoTauBoostedDeepVSeVTight;
+      vector<float> recoTauBoostedDeepVSjetVTight;
+
+      vector<float> recoTauBoostedDeepVSeVVLoose;
+      vector<float> recoTauBoostedDeepVSjetVVLoose;
+
+      vector<float> recoTauBoostedDeepVSeVVTight;
+      vector<float> recoTauBoostedDeepVSjetVVTight;
+
+      vector<float> recoTauBoostedDeepVSeVVVLoose;
+      vector<float> recoTauBoostedDeepVSjetVVVLoose;
+
+      vector<int> recoTauBoostedRefToMuon;
+      vector<int> recoTauBoostedRefToElectron;
+
       // --- reconstructed jets ---
       vector<float> recoJetPt;
       vector<float> recoJetEta;
@@ -427,6 +492,7 @@ DiMuDiTauAnalyzer::DiMuDiTauAnalyzer(const edm::ParameterSet& iConfig):
     TauTag(consumes<edm::View<pat::Tau>>(iConfig.getParameter<edm::InputTag>("TauTag"))),
     TauMuonCleanedTag(consumes<edm::View<pat::Tau>>(iConfig.getParameter<edm::InputTag>("TauMuonCleanedTag"))),
     TauElectronCleanedTag(consumes<edm::View<pat::Tau>>(iConfig.getParameter<edm::InputTag>("TauElectronCleanedTag"))),
+    TauBoostedTag(consumes<edm::View<pat::Tau>>(iConfig.getParameter<edm::InputTag>("TauBoostedTag"))),
     JetTag(consumes<edm::View<pat::Jet>>(iConfig.getParameter<edm::InputTag>("JetTag"))),
     MetTag(consumes<edm::View<pat::MET>>(iConfig.getParameter<edm::InputTag>("MetTag"))),
     VertexTag(consumes<edm::View<reco::Vertex>>(iConfig.getParameter<edm::InputTag>("VertexTag"))),
@@ -479,6 +545,9 @@ DiMuDiTauAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
 
    edm::Handle<edm::View<pat::Tau>> pTauElectronCleaned;
    iEvent.getByToken(TauElectronCleanedTag, pTauElectronCleaned);
+
+   edm::Handle<edm::View<pat::Tau>> pTauBoosted;
+   iEvent.getByToken(TauBoostedTag, pTauBoosted);
 
    edm::Handle<edm::View<pat::Jet>> pJet;
    iEvent.getByToken(JetTag, pJet);
@@ -1132,6 +1201,81 @@ DiMuDiTauAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
        } // end for loop on taus
    } // end if pTauElectronCleaned->size()>0
 
+   // --- prepare tau vector (boosted) ---
+   if (pTauBoosted->size()>0)
+   {
+       for(edm::View<pat::Tau>::const_iterator iTau=pTauBoosted->begin(); iTau!=pTauBoosted->end(); iTau++)
+       {
+           recoTauBoostedPt.push_back(iTau->pt());
+           recoTauBoostedEta.push_back(iTau->eta());
+           recoTauBoostedPhi.push_back(iTau->phi());
+           recoTauBoostedEnergy.push_back(iTau->energy());
+           recoTauBoostedPDGId.push_back(iTau->pdgId());
+           recoTauBoostedDecayMode.push_back(iTau->decayMode());
+           recoTauBoostedDecayModeFinding.push_back(iTau->tauID("decayModeFinding"));
+           recoTauBoostedDecayModeFindingNewDMs.push_back(iTau->tauID("decayModeFindingNewDMs"));
+           recoTauBoostedRefToMuon.push_back(0);
+           recoTauBoostedRefToElectron.push_back(0);
+
+           if (iTau->isTauIDAvailable("byIsolationMVArun2017v2DBoldDMwLTraw2017"))
+           {
+               recoTauBoostedIsoMVArawValue.push_back(iTau->tauID("byIsolationMVArun2017v2DBoldDMwLTraw2017"));
+               recoTauBoostedIsoMVAVVLoose.push_back(iTau->tauID("byVVLooseIsolationMVArun2017v2DBoldDMwLT2017"));
+               recoTauBoostedIsoMVAVLoose.push_back(iTau->tauID("byVLooseIsolationMVArun2017v2DBoldDMwLT2017"));
+               recoTauBoostedIsoMVALoose.push_back(iTau->tauID("byLooseIsolationMVArun2017v2DBoldDMwLT2017"));
+               recoTauBoostedIsoMVAMedium.push_back(iTau->tauID("byMediumIsolationMVArun2017v2DBoldDMwLT2017"));
+               recoTauBoostedIsoMVATight.push_back(iTau->tauID("byTightIsolationMVArun2017v2DBoldDMwLT2017"));
+               recoTauBoostedIsoMVAVTight.push_back(iTau->tauID("byVTightIsolationMVArun2017v2DBoldDMwLT2017"));
+               recoTauBoostedIsoMVAVVTight.push_back(iTau->tauID("byVVTightIsolationMVArun2017v2DBoldDMwLT2017"));
+           } // end if TauMVA ID available
+
+           if (iTau->isTauIDAvailable("byDeepTau2017v2p1BoostedVSjetraw"))
+           {
+               recoTauBoostedDeepVSeraw.push_back(iTau->tauID("byDeepTau2017v2p1BoostedVSeraw"));
+               recoTauBoostedDeepVSjetraw.push_back(iTau->tauID("byDeepTau2017v2p1BoostedVSjetraw"));
+               recoTauBoostedDeepVSmuraw.push_back(iTau->tauID("byDeepTau2017v2p1BoostedVSmuraw"));
+
+               recoTauBoostedDeepVSeLoose.push_back(iTau->tauID("byLooseDeepTau2017v2p1BoostedVSe"));
+               recoTauBoostedDeepVSjetLoose.push_back(iTau->tauID("byLooseDeepTau2017v2p1BoostedVSjet"));
+               recoTauBoostedDeepVSmuLoose.push_back(iTau->tauID("byLooseDeepTau2017v2p1BoostedVSmu"));
+
+               recoTauBoostedDeepVSeMedium.push_back(iTau->tauID("byMediumDeepTau2017v2p1BoostedVSe"));
+               recoTauBoostedDeepVSjetMedium.push_back(iTau->tauID("byMediumDeepTau2017v2p1BoostedVSjet"));
+               recoTauBoostedDeepVSmuMedium.push_back(iTau->tauID("byMediumDeepTau2017v2p1BoostedVSmu"));
+
+               recoTauBoostedDeepVSeTight.push_back(iTau->tauID("byTightDeepTau2017v2p1BoostedVSe"));
+               recoTauBoostedDeepVSjetTight.push_back(iTau->tauID("byTightDeepTau2017v2p1BoostedVSjet"));
+               recoTauBoostedDeepVSmuTight.push_back(iTau->tauID("byTightDeepTau2017v2p1BoostedVSmu"));
+
+               recoTauBoostedDeepVSeVLoose.push_back(iTau->tauID("byVLooseDeepTau2017v2p1BoostedVSe"));
+               recoTauBoostedDeepVSjetVLoose.push_back(iTau->tauID("byVLooseDeepTau2017v2p1BoostedVSjet"));
+               recoTauBoostedDeepVSmuVLoose.push_back(iTau->tauID("byVLooseDeepTau2017v2p1BoostedVSmu"));
+
+               recoTauBoostedDeepVSeVTight.push_back(iTau->tauID("byVTightDeepTau2017v2p1BoostedVSe"));
+               recoTauBoostedDeepVSjetVTight.push_back(iTau->tauID("byVTightDeepTau2017v2p1BoostedVSjet"));
+
+               recoTauBoostedDeepVSeVVLoose.push_back(iTau->tauID("byVVLooseDeepTau2017v2p1BoostedVSe"));
+               recoTauBoostedDeepVSjetVVLoose.push_back(iTau->tauID("byVVLooseDeepTau2017v2p1BoostedVSjet"));
+
+               recoTauBoostedDeepVSeVVTight.push_back(iTau->tauID("byVVTightDeepTau2017v2p1BoostedVSe"));
+               recoTauBoostedDeepVSjetVVTight.push_back(iTau->tauID("byVVTightDeepTau2017v2p1BoostedVSjet"));
+
+               recoTauBoostedDeepVSeVVVLoose.push_back(iTau->tauID("byVVVLooseDeepTau2017v2p1BoostedVSe"));
+               recoTauBoostedDeepVSjetVVVLoose.push_back(iTau->tauID("byVVVLooseDeepTau2017v2p1BoostedVSjet"));
+           } // end if DeepTau ID available
+
+           recoTauBoostedAntiMuMVALoose.push_back(iTau->tauID("againstMuonLoose3"));
+           recoTauBoostedAntiMuMVATight.push_back(iTau->tauID("againstMuonTight3"));
+       
+           recoTauBoostedAntiEleMVArawValue.push_back(iTau->tauID("againstElectronMVA6Raw"));
+           recoTauBoostedAntiEleMVAVLoose.push_back(iTau->tauID("againstElectronVLooseMVA6"));
+           recoTauBoostedAntiEleMVALoose.push_back(iTau->tauID("againstElectronLooseMVA6"));
+           recoTauBoostedAntiEleMVAMedium.push_back(iTau->tauID("againstElectronMediumMVA6"));
+           recoTauBoostedAntiEleMVATight.push_back(iTau->tauID("againstElectronTightMVA6"));
+           recoTauBoostedAntiEleMVAVTight.push_back(iTau->tauID("againstElectronVTightMVA6"));
+       } // end for loop on taus
+   } // end if pTauBoosted->size()>0
+
    // --- prepare for the common source particle reference records for muon/electron candidates
    if (pElectron->size()>0 && pMu->size()>0)
    {
@@ -1633,6 +1777,69 @@ DiMuDiTauAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
    recoTauElectronCleanedDeepVSeVVVLoose.clear();
    recoTauElectronCleanedDeepVSjetVVVLoose.clear();
 
+   // --- reconstructed taus (boosted) ---
+   recoTauBoostedPt.clear();
+   recoTauBoostedEta.clear();
+   recoTauBoostedPhi.clear();
+   recoTauBoostedEnergy.clear();
+   recoTauBoostedPDGId.clear();
+   recoTauBoostedDecayMode.clear();
+   recoTauBoostedDecayModeFinding.clear();
+   recoTauBoostedDecayModeFindingNewDMs.clear();
+   recoTauBoostedRefToMuon.clear();
+   recoTauBoostedRefToElectron.clear();
+
+   recoTauBoostedIsoMVArawValue.clear();
+   recoTauBoostedIsoMVAVVLoose.clear();
+   recoTauBoostedIsoMVAVLoose.clear();
+   recoTauBoostedIsoMVALoose.clear();
+   recoTauBoostedIsoMVAMedium.clear();
+   recoTauBoostedIsoMVATight.clear();
+   recoTauBoostedIsoMVAVTight.clear();
+   recoTauBoostedIsoMVAVVTight.clear();
+   
+   recoTauBoostedAntiMuMVALoose.clear();
+   recoTauBoostedAntiMuMVATight.clear();
+
+   recoTauBoostedAntiEleMVArawValue.clear();
+   recoTauBoostedAntiEleMVAVLoose.clear();
+   recoTauBoostedAntiEleMVALoose.clear();
+   recoTauBoostedAntiEleMVAMedium.clear();
+   recoTauBoostedAntiEleMVATight.clear();
+   recoTauBoostedAntiEleMVAVTight.clear();
+
+   recoTauBoostedDeepVSeraw.clear();
+   recoTauBoostedDeepVSjetraw.clear();
+   recoTauBoostedDeepVSmuraw.clear();
+ 
+   recoTauBoostedDeepVSeLoose.clear();
+   recoTauBoostedDeepVSjetLoose.clear();
+   recoTauBoostedDeepVSmuLoose.clear();
+
+   recoTauBoostedDeepVSeMedium.clear();
+   recoTauBoostedDeepVSjetMedium.clear();
+   recoTauBoostedDeepVSmuMedium.clear();
+
+   recoTauBoostedDeepVSeTight.clear();
+   recoTauBoostedDeepVSjetTight.clear();
+   recoTauBoostedDeepVSmuTight.clear();
+
+   recoTauBoostedDeepVSeVLoose.clear();
+   recoTauBoostedDeepVSjetVLoose.clear();
+   recoTauBoostedDeepVSmuVLoose.clear();
+
+   recoTauBoostedDeepVSeVTight.clear();
+   recoTauBoostedDeepVSjetVTight.clear();
+
+   recoTauBoostedDeepVSeVVLoose.clear();
+   recoTauBoostedDeepVSjetVVLoose.clear();
+
+   recoTauBoostedDeepVSeVVTight.clear();
+   recoTauBoostedDeepVSjetVVTight.clear();
+
+   recoTauBoostedDeepVSeVVVLoose.clear();
+   recoTauBoostedDeepVSjetVVVLoose.clear();
+
    // --- reconstructed jets ---
    recoJetPt.clear();
    recoJetEta.clear();
@@ -2054,6 +2261,68 @@ DiMuDiTauAnalyzer::beginJob()
     objectTree->Branch("recoTauElectronCleanedAntiEleMVAMedium", &recoTauElectronCleanedAntiEleMVAMedium);
     objectTree->Branch("recoTauElectronCleanedAntiEleMVATight", &recoTauElectronCleanedAntiEleMVATight);
     objectTree->Branch("recoTauElectronCleanedAntiEleMVAVTight", &recoTauElectronCleanedAntiEleMVAVTight);
+
+    objectTree->Branch("recoTauBoostedPt", &recoTauBoostedPt);
+    objectTree->Branch("recoTauBoostedEta", &recoTauBoostedEta);
+    objectTree->Branch("recoTauBoostedPhi", &recoTauBoostedPhi);
+    objectTree->Branch("recoTauBoostedEnergy", &recoTauBoostedEnergy);
+    objectTree->Branch("recoTauBoostedPDGId", &recoTauBoostedPDGId);
+    objectTree->Branch("recoTauBoostedDecayMode", &recoTauBoostedDecayMode);
+    objectTree->Branch("recoTauBoostedDecayModeFinding", &recoTauBoostedDecayModeFinding);
+    objectTree->Branch("recoTauBoostedDecayModeFindingNewDMs", &recoTauBoostedDecayModeFindingNewDMs);
+    objectTree->Branch("recoTauBoostedRefToMuon", &recoTauBoostedRefToMuon);
+    objectTree->Branch("recoTauBoostedRefToElectron", &recoTauBoostedRefToElectron);
+
+    objectTree->Branch("recoTauBoostedDeepVSeraw", &recoTauBoostedDeepVSeraw);
+    objectTree->Branch("recoTauBoostedDeepVSjetraw", &recoTauBoostedDeepVSjetraw);
+    objectTree->Branch("recoTauBoostedDeepVSmuraw", &recoTauBoostedDeepVSmuraw);
+
+    objectTree->Branch("recoTauBoostedDeepVSeLoose", &recoTauBoostedDeepVSeLoose);
+    objectTree->Branch("recoTauBoostedDeepVSjetLoose", &recoTauBoostedDeepVSjetLoose);
+    objectTree->Branch("recoTauBoostedDeepVSmuLoose", &recoTauBoostedDeepVSmuLoose);
+
+    objectTree->Branch("recoTauBoostedDeepVSeMedium", &recoTauBoostedDeepVSeMedium);
+    objectTree->Branch("recoTauBoostedDeepVSjetMedium", &recoTauBoostedDeepVSjetMedium);
+    objectTree->Branch("recoTauBoostedDeepVSmuMedium", &recoTauBoostedDeepVSmuMedium);
+
+    objectTree->Branch("recoTauBoostedDeepVSeTight", &recoTauBoostedDeepVSeTight);
+    objectTree->Branch("recoTauBoostedDeepVSjetTight", &recoTauBoostedDeepVSjetTight);
+    objectTree->Branch("recoTauBoostedDeepVSmuTight", &recoTauBoostedDeepVSmuTight);
+
+    objectTree->Branch("recoTauBoostedDeepVSeVLoose", &recoTauBoostedDeepVSeVLoose);
+    objectTree->Branch("recoTauBoostedDeepVSjetVLoose", &recoTauBoostedDeepVSjetVLoose);
+    objectTree->Branch("recoTauBoostedDeepVSmuVLoose", &recoTauBoostedDeepVSmuVLoose);
+
+    objectTree->Branch("recoTauBoostedDeepVSeVTight", &recoTauBoostedDeepVSeVTight);
+    objectTree->Branch("recoTauBoostedDeepVSjetVTight", &recoTauBoostedDeepVSjetVTight);
+
+    objectTree->Branch("recoTauBoostedDeepVSeVVLoose", &recoTauBoostedDeepVSeVVLoose);
+    objectTree->Branch("recoTauBoostedDeepVSjetVVLoose", &recoTauBoostedDeepVSjetVVLoose);
+
+    objectTree->Branch("recoTauBoostedDeepVSeVVTight", &recoTauBoostedDeepVSeVVTight);
+    objectTree->Branch("recoTauBoostedDeepVSjetVVTight", &recoTauBoostedDeepVSjetVVTight);
+
+    objectTree->Branch("recoTauBoostedDeepVSeVVVLoose", &recoTauBoostedDeepVSeVVVLoose);
+    objectTree->Branch("recoTauBoostedDeepVSjetVVVLoose", &recoTauBoostedDeepVSjetVVVLoose);
+
+    objectTree->Branch("recoTauBoostedIsoMVArawValue", &recoTauBoostedIsoMVArawValue);
+    objectTree->Branch("recoTauBoostedIsoMVAVVLoose", &recoTauBoostedIsoMVAVVLoose);
+    objectTree->Branch("recoTauBoostedIsoMVAVLoose", &recoTauBoostedIsoMVAVLoose);
+    objectTree->Branch("recoTauBoostedIsoMVALoose", &recoTauBoostedIsoMVALoose);
+    objectTree->Branch("recoTauBoostedIsoMVAMedium", &recoTauBoostedIsoMVAMedium);
+    objectTree->Branch("recoTauBoostedIsoMVATight", &recoTauBoostedIsoMVATight);
+    objectTree->Branch("recoTauBoostedIsoMVAVTight", &recoTauBoostedIsoMVAVTight);
+    objectTree->Branch("recoTauBoostedIsoMVAVVTight", &recoTauBoostedIsoMVAVVTight);
+
+    objectTree->Branch("recoTauBoostedAntiMuMVALoose", &recoTauBoostedAntiMuMVALoose);
+    objectTree->Branch("recoTauBoostedAntiMuMVATight", &recoTauBoostedAntiMuMVATight);
+    
+    objectTree->Branch("recoTauBoostedAntiEleMVArawValue", &recoTauBoostedAntiEleMVArawValue);
+    objectTree->Branch("recoTauBoostedAntiEleMVAVLoose", &recoTauBoostedAntiEleMVAVLoose);
+    objectTree->Branch("recoTauBoostedAntiEleMVALoose", &recoTauBoostedAntiEleMVALoose);
+    objectTree->Branch("recoTauBoostedAntiEleMVAMedium", &recoTauBoostedAntiEleMVAMedium);
+    objectTree->Branch("recoTauBoostedAntiEleMVATight", &recoTauBoostedAntiEleMVATight);
+    objectTree->Branch("recoTauBoostedAntiEleMVAVTight", &recoTauBoostedAntiEleMVAVTight);
 
     objectTree->Branch("recoJetPt", &recoJetPt);
     objectTree->Branch("recoJetEta", &recoJetEta);

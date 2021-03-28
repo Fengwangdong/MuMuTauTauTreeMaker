@@ -70,6 +70,20 @@ tauIdEmbedderElectronCleaned = tauIdConfigElectronCleaned.TauIDEmbedderElectronC
         )
 tauIdEmbedderElectronCleaned.runTauID()
 process.rerunTauElectronCleanedIDSequence = cms.Sequence(process.rerunMvaIsolationSequenceElectronCleaned * getattr(process,updatedTauNameElectronCleaned))
+
+print " ====== use slimmedTausBoosted cluster ======"
+updatedTauNameBoosted = "slimmedTausBoostedNewID"
+import MuMuTauTauTreeMaker.MuTauTreelizer.TauIdDeep_slimmedTausBoosted as tauIdConfigBoosted
+tauIdEmbedderBoosted = tauIdConfigBoosted.TauIDEmbedderBoosted(process, cms,
+        debug = False,
+        updatedTauName = updatedTauNameBoosted,
+        PATTauProducer = cms.InputTag('cleanedSlimmedTausBoosted'),
+        srcChargedIsoPtSum = cms.string('chargedIsoPtSumNoOverLap'),
+        srcNeutralIsoPtSum = cms.string('neutralIsoPtSumNoOverLap'),
+        toKeep = ["deepTau2017v2p1Boosted","2017v2Boosted"]
+        )
+tauIdEmbedderBoosted.runTauID()
+process.rerunTauBoostedIDSequence = cms.Sequence(process.ca8PFJetsCHSprunedForBoostedTausPAT * getattr(process, "cleanedSlimmedTausBoosted") * process.rerunMvaIsolationSequenceBoosted * getattr(process,updatedTauNameBoosted))
 ############################################################
 
 ######## implant the 2017v2 egamma ID into the 2018 miniAOD ############
@@ -94,6 +108,8 @@ if options.isMC == 1:
             process.TauMuonCleanedCandSelector*
             process.rerunTauElectronCleanedIDSequence*
             process.TauElectronCleanedCandSelector*
+            process.rerunTauBoostedIDSequence*
+            process.TauBoostedCandSelector*
             process.DeepDiTauProducer*
             process.JetIdEmbedder*
             process.GenMuonCandSelector*
@@ -123,6 +139,8 @@ else:
             process.TauMuonCleanedCandSelector*
             process.rerunTauElectronCleanedIDSequence*
             process.TauElectronCleanedCandSelector*
+            process.rerunTauBoostedIDSequence*
+            process.TauBoostedCandSelector*
             process.DeepDiTauProducer*
             process.JetIdEmbedder*
             process.DiMuDiTauAnalyzer
