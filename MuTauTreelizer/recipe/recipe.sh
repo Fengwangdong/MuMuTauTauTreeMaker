@@ -1,7 +1,5 @@
 #!/bin/bash
 
-git cms-init
-
 git cms-addpkg RecoEgamma/EgammaTools
 
 git clone https://github.com/cms-egamma/EgammaPostRecoTools.git
