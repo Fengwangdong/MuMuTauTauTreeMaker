@@ -31,7 +31,7 @@
 #include "FWCore/Utilities/interface/StreamID.h"
 
 #include "DataFormats/PatCandidates/interface/Electron.h"
-#include "RecoEgamma/EgammaTools/interface/EffectiveAreas.h"
+#include "CommonTools/Egamma/interface/EffectiveAreas.h"
 #include <string>
 #include <math.h>
 //

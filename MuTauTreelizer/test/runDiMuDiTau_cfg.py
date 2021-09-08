@@ -20,7 +20,7 @@ from Configuration.AlCa.GlobalTag import GlobalTag
 ########### eg: cmsRun runDiMuDiTau_2018_cfg.py isMC=1 ###############
 ##########################################################################
 if options.isMC == 1:
-    print " ****** we will run on sample of: MC ******"
+    print (" ****** we will run on sample of: MC ******")
     if options.era == '2016preVFP':
         process.GlobalTag.globaltag = '106X_mcRun2_asymptotic_preVFP_v9'
 
@@ -36,7 +36,7 @@ if options.isMC == 1:
     process.load("MuMuTauTauTreeMaker.MuTauTreelizer.DiMuDiTauSelectorMC_cfi")
 
 else:
-    print " ****** we will run on sample of: data ******"
+    print (" ****** we will run on sample of: data ******")
     process.GlobalTag.globaltag = '106X_dataRun2_v32'
     process.load("MuMuTauTauTreeMaker.MuTauTreelizer.DiMuDiTauSelector_cfi")
 
@@ -50,46 +50,46 @@ process.source = cms.Source("PoolSource",
 
 ######### embed 2017v2 tauID into the miniAOD ###############
 # reference: https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuidePFTauID#Rerunning_of_the_tau_ID_on_M_AN1
-print " ====== use slimmedTaus cluster ======"
+print (" ====== use slimmedTaus cluster ======")
 updatedTauName = "slimmedTausNewID"
 import MuMuTauTauTreeMaker.MuTauTreelizer.TauIdDeep_slimmedTaus as tauIdConfig
 tauIdEmbedder = tauIdConfig.TauIDEmbedder(process, cms,
-        debug = True,
+        #debug = True,
         updatedTauName = updatedTauName,
         toKeep = ["deepTau2017v2p1","2017v2"]
         )
 tauIdEmbedder.runTauID()
 process.rerunTauIDSequence = cms.Sequence(process.rerunMvaIsolationSequence * getattr(process,updatedTauName))
 
-print " ====== use slimmedTausMuonCleaned cluster ======"
+print (" ====== use slimmedTausMuonCleaned cluster ======")
 updatedTauNameMuonCleaned = "slimmedTausMuonCleanedNewID"
 import MuMuTauTauTreeMaker.MuTauTreelizer.TauIdDeep_slimmedTausMuonCleaned as tauIdConfigMuonCleaned
 tauIdEmbedderMuonCleaned = tauIdConfigMuonCleaned.TauIDEmbedderMuonCleaned(process, cms,
-        debug = True,
+        #debug = True,
         updatedTauName = updatedTauNameMuonCleaned,
-        toKeep = ["deepTau2017v2p1MuonCleaned","2017v2MuonCleaned"]
+        toKeep = ["deepTau2017v2p1","2017v2"]
         )
 tauIdEmbedderMuonCleaned.runTauID()
 process.rerunTauMuonCleanedIDSequence = cms.Sequence(process.rerunMvaIsolationSequenceMuonCleaned * getattr(process,updatedTauNameMuonCleaned))
 
-print " ====== use slimmedTausElectronCleaned cluster ======"
+print (" ====== use slimmedTausElectronCleaned cluster ======")
 updatedTauNameElectronCleaned = "slimmedTausElectronCleanedNewID"
 import MuMuTauTauTreeMaker.MuTauTreelizer.TauIdDeep_slimmedTausElectronCleaned as tauIdConfigElectronCleaned
 tauIdEmbedderElectronCleaned = tauIdConfigElectronCleaned.TauIDEmbedderElectronCleaned(process, cms,
-        debug = True,
+        #debug = True,
         updatedTauName = updatedTauNameElectronCleaned,
-        toKeep = ["deepTau2017v2p1ElectronCleaned","2017v2ElectronCleaned"]
+        toKeep = ["deepTau2017v2p1","2017v2"]
         )
 tauIdEmbedderElectronCleaned.runTauID()
 process.rerunTauElectronCleanedIDSequence = cms.Sequence(process.rerunMvaIsolationSequenceElectronCleaned * getattr(process,updatedTauNameElectronCleaned))
 
-print " ====== use slimmedTausBoosted cluster ======"
+print (" ====== use slimmedTausBoosted cluster ======")
 updatedTauNameBoosted = "slimmedTausBoostedNewID"
 import MuMuTauTauTreeMaker.MuTauTreelizer.TauIdDeep_slimmedTausBoosted as tauIdConfigBoosted
 tauIdEmbedderBoosted = tauIdConfigBoosted.TauIDEmbedderBoosted(process, cms,
-        debug = True,
+        #debug = True,
         updatedTauName = updatedTauNameBoosted,
-        toKeep = ["deepTau2017v2p1Boosted","2017v2Boosted"]
+        toKeep = ["deepTau2017v2p1","2017v2"]
         )
 tauIdEmbedderBoosted.runTauID()
 process.rerunTauBoostedIDSequence = cms.Sequence(process.rerunMvaIsolationSequenceBoosted * getattr(process,updatedTauNameBoosted))
@@ -97,7 +97,7 @@ process.rerunTauBoostedIDSequence = cms.Sequence(process.rerunMvaIsolationSequen
 
 ######## embed the egamma ID into the nanoAOD ############
 # reference: https://twiki.cern.ch/twiki/bin/view/CMS/EgammaUL2016To2018
-from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
+from MuMuTauTauTreeMaker.MuTauTreelizer.EgammaPostRecoTools import setupEgammaPostRecoSeq
 
 if options.era == '2016preVFP':
     setupEgammaPostRecoSeq(process, era='2016preVFP-UL')

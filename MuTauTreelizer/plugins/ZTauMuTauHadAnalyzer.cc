@@ -509,15 +509,28 @@ ZTauMuTauHadAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
            recoTauDeepVSjetVVVLoose.push_back(iTau->tauID("byVVVLooseDeepTau2017v2p1VSjet"));
        } // end if DeepTau ID available
 
-       recoTauAntiMuMVALoose.push_back(iTau->tauID("againstMuonLoose3"));
-       recoTauAntiMuMVATight.push_back(iTau->tauID("againstMuonTight3"));
-       
-       recoTauAntiEleMVArawValue.push_back(iTau->tauID("againstElectronMVA6Raw"));
-       recoTauAntiEleMVAVLoose.push_back(iTau->tauID("againstElectronVLooseMVA6"));
-       recoTauAntiEleMVALoose.push_back(iTau->tauID("againstElectronLooseMVA6"));
-       recoTauAntiEleMVAMedium.push_back(iTau->tauID("againstElectronMediumMVA6"));
-       recoTauAntiEleMVATight.push_back(iTau->tauID("againstElectronTightMVA6"));
-       recoTauAntiEleMVAVTight.push_back(iTau->tauID("againstElectronVTightMVA6"));
+       if (iTau->isTauIDAvailable("againstMuonLoose3"))
+       {
+           recoTauAntiMuMVALoose.push_back(iTau->tauID("againstMuonLoose3"));
+           recoTauAntiMuMVATight.push_back(iTau->tauID("againstMuonTight3"));
+           recoTauAntiEleMVArawValue.push_back(iTau->tauID("againstElectronMVA6Raw"));
+           recoTauAntiEleMVAVLoose.push_back(iTau->tauID("againstElectronVLooseMVA6"));
+           recoTauAntiEleMVALoose.push_back(iTau->tauID("againstElectronLooseMVA6"));
+           recoTauAntiEleMVAMedium.push_back(iTau->tauID("againstElectronMediumMVA6"));
+           recoTauAntiEleMVATight.push_back(iTau->tauID("againstElectronTightMVA6"));
+           recoTauAntiEleMVAVTight.push_back(iTau->tauID("againstElectronVTightMVA6"));
+       } // end if old anti-lep discs are available
+
+       else{
+           recoTauAntiMuMVALoose.push_back(iTau->tauID("againstMuonLooseSimple"));
+           recoTauAntiMuMVATight.push_back(iTau->tauID("againstMuonTightSimple"));
+           recoTauAntiEleMVArawValue.push_back(iTau->tauID("againstElectronMVA6Raw2018"));
+           recoTauAntiEleMVAVLoose.push_back(iTau->tauID("againstElectronVLooseMVA62018"));
+           recoTauAntiEleMVALoose.push_back(iTau->tauID("againstElectronLooseMVA62018"));
+           recoTauAntiEleMVAMedium.push_back(iTau->tauID("againstElectronMediumMVA62018"));
+           recoTauAntiEleMVATight.push_back(iTau->tauID("againstElectronTightMVA62018"));
+           recoTauAntiEleMVAVTight.push_back(iTau->tauID("againstElectronVTightMVA62018"));
+       } // end if new anti-lep discs are available
    } // end for loop on reco-taus
 
    // --- prepare jet vector ---

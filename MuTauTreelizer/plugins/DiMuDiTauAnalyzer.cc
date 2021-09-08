@@ -39,7 +39,7 @@
 #include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 #include "DataFormats/PatCandidates/interface/Vertexing.h"
-#include "RecoEgamma/EgammaTools/interface/EffectiveAreas.h"
+#include "CommonTools/Egamma/interface/EffectiveAreas.h"
 #include "TTree.h"
 #include "TLorentzVector.h"
 #include <math.h>
@@ -1039,15 +1039,28 @@ DiMuDiTauAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
                recoTauDeepVSjetVVVLoose.push_back(iTau->tauID("byVVVLooseDeepTau2017v2p1VSjet"));
            } // end if DeepTau ID available
 
-           recoTauAntiMuMVALoose.push_back(iTau->tauID("againstMuonLoose3"));
-           recoTauAntiMuMVATight.push_back(iTau->tauID("againstMuonTight3"));
-       
-           recoTauAntiEleMVArawValue.push_back(iTau->tauID("againstElectronMVA6Raw"));
-           recoTauAntiEleMVAVLoose.push_back(iTau->tauID("againstElectronVLooseMVA6"));
-           recoTauAntiEleMVALoose.push_back(iTau->tauID("againstElectronLooseMVA6"));
-           recoTauAntiEleMVAMedium.push_back(iTau->tauID("againstElectronMediumMVA6"));
-           recoTauAntiEleMVATight.push_back(iTau->tauID("againstElectronTightMVA6"));
-           recoTauAntiEleMVAVTight.push_back(iTau->tauID("againstElectronVTightMVA6"));
+           if (iTau->isTauIDAvailable("againstMuonLoose3"))
+           {
+               recoTauAntiMuMVALoose.push_back(iTau->tauID("againstMuonLoose3"));
+               recoTauAntiMuMVATight.push_back(iTau->tauID("againstMuonTight3"));
+               recoTauAntiEleMVArawValue.push_back(iTau->tauID("againstElectronMVA6Raw"));
+               recoTauAntiEleMVAVLoose.push_back(iTau->tauID("againstElectronVLooseMVA6"));
+               recoTauAntiEleMVALoose.push_back(iTau->tauID("againstElectronLooseMVA6"));
+               recoTauAntiEleMVAMedium.push_back(iTau->tauID("againstElectronMediumMVA6"));
+               recoTauAntiEleMVATight.push_back(iTau->tauID("againstElectronTightMVA6"));
+               recoTauAntiEleMVAVTight.push_back(iTau->tauID("againstElectronVTightMVA6"));
+           } // end if old anti-lep discs are available
+
+           else{
+               recoTauAntiMuMVALoose.push_back(iTau->tauID("againstMuonLooseSimple"));
+               recoTauAntiMuMVATight.push_back(iTau->tauID("againstMuonTightSimple"));
+               recoTauAntiEleMVArawValue.push_back(iTau->tauID("againstElectronMVA6Raw2018"));
+               recoTauAntiEleMVAVLoose.push_back(iTau->tauID("againstElectronVLooseMVA62018"));
+               recoTauAntiEleMVALoose.push_back(iTau->tauID("againstElectronLooseMVA62018"));
+               recoTauAntiEleMVAMedium.push_back(iTau->tauID("againstElectronMediumMVA62018"));
+               recoTauAntiEleMVATight.push_back(iTau->tauID("againstElectronTightMVA62018"));
+               recoTauAntiEleMVAVTight.push_back(iTau->tauID("againstElectronVTightMVA62018"));
+           } // end if new anti-lep discs are available
        } // end for loop on taus
    } // end if pTau->size()>0
 
@@ -1114,15 +1127,28 @@ DiMuDiTauAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
                recoTauMuonCleanedDeepVSjetVVVLoose.push_back(iTau->tauID("byVVVLooseDeepTau2017v2p1MuonCleanedVSjet"));
            } // end if DeepTau ID available
 
-           recoTauMuonCleanedAntiMuMVALoose.push_back(iTau->tauID("againstMuonLoose3"));
-           recoTauMuonCleanedAntiMuMVATight.push_back(iTau->tauID("againstMuonTight3"));
-       
-           recoTauMuonCleanedAntiEleMVArawValue.push_back(iTau->tauID("againstElectronMVA6Raw"));
-           recoTauMuonCleanedAntiEleMVAVLoose.push_back(iTau->tauID("againstElectronVLooseMVA6"));
-           recoTauMuonCleanedAntiEleMVALoose.push_back(iTau->tauID("againstElectronLooseMVA6"));
-           recoTauMuonCleanedAntiEleMVAMedium.push_back(iTau->tauID("againstElectronMediumMVA6"));
-           recoTauMuonCleanedAntiEleMVATight.push_back(iTau->tauID("againstElectronTightMVA6"));
-           recoTauMuonCleanedAntiEleMVAVTight.push_back(iTau->tauID("againstElectronVTightMVA6"));
+           if (iTau->isTauIDAvailable("againstMuonLoose3"))
+           {
+               recoTauMuonCleanedAntiMuMVALoose.push_back(iTau->tauID("againstMuonLoose3"));
+               recoTauMuonCleanedAntiMuMVATight.push_back(iTau->tauID("againstMuonTight3"));
+               recoTauMuonCleanedAntiEleMVArawValue.push_back(iTau->tauID("againstElectronMVA6Raw"));
+               recoTauMuonCleanedAntiEleMVAVLoose.push_back(iTau->tauID("againstElectronVLooseMVA6"));
+               recoTauMuonCleanedAntiEleMVALoose.push_back(iTau->tauID("againstElectronLooseMVA6"));
+               recoTauMuonCleanedAntiEleMVAMedium.push_back(iTau->tauID("againstElectronMediumMVA6"));
+               recoTauMuonCleanedAntiEleMVATight.push_back(iTau->tauID("againstElectronTightMVA6"));
+               recoTauMuonCleanedAntiEleMVAVTight.push_back(iTau->tauID("againstElectronVTightMVA6"));
+           } // end if old anti-lep discs are available
+
+           else{
+               recoTauMuonCleanedAntiMuMVALoose.push_back(iTau->tauID("againstMuonLooseSimple"));
+               recoTauMuonCleanedAntiMuMVATight.push_back(iTau->tauID("againstMuonTightSimple"));
+               recoTauMuonCleanedAntiEleMVArawValue.push_back(iTau->tauID("againstElectronMVA6Raw2018"));
+               recoTauMuonCleanedAntiEleMVAVLoose.push_back(iTau->tauID("againstElectronVLooseMVA62018"));
+               recoTauMuonCleanedAntiEleMVALoose.push_back(iTau->tauID("againstElectronLooseMVA62018"));
+               recoTauMuonCleanedAntiEleMVAMedium.push_back(iTau->tauID("againstElectronMediumMVA62018"));
+               recoTauMuonCleanedAntiEleMVATight.push_back(iTau->tauID("againstElectronTightMVA62018"));
+               recoTauMuonCleanedAntiEleMVAVTight.push_back(iTau->tauID("againstElectronVTightMVA62018"));
+           } // end if new anti-lep discs are available
        } // end for loop on taus
    } // end if pTauMuonCleaned->size()>0
 
@@ -1189,15 +1215,28 @@ DiMuDiTauAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
                recoTauElectronCleanedDeepVSjetVVVLoose.push_back(iTau->tauID("byVVVLooseDeepTau2017v2p1ElectronCleanedVSjet"));
            } // end if DeepTau ID available
 
-           recoTauElectronCleanedAntiMuMVALoose.push_back(iTau->tauID("againstMuonLoose3"));
-           recoTauElectronCleanedAntiMuMVATight.push_back(iTau->tauID("againstMuonTight3"));
-       
-           recoTauElectronCleanedAntiEleMVArawValue.push_back(iTau->tauID("againstElectronMVA6Raw"));
-           recoTauElectronCleanedAntiEleMVAVLoose.push_back(iTau->tauID("againstElectronVLooseMVA6"));
-           recoTauElectronCleanedAntiEleMVALoose.push_back(iTau->tauID("againstElectronLooseMVA6"));
-           recoTauElectronCleanedAntiEleMVAMedium.push_back(iTau->tauID("againstElectronMediumMVA6"));
-           recoTauElectronCleanedAntiEleMVATight.push_back(iTau->tauID("againstElectronTightMVA6"));
-           recoTauElectronCleanedAntiEleMVAVTight.push_back(iTau->tauID("againstElectronVTightMVA6"));
+           if (iTau->isTauIDAvailable("againstMuonLoose3"))
+           {
+               recoTauElectronCleanedAntiMuMVALoose.push_back(iTau->tauID("againstMuonLoose3"));
+               recoTauElectronCleanedAntiMuMVATight.push_back(iTau->tauID("againstMuonTight3"));
+               recoTauElectronCleanedAntiEleMVArawValue.push_back(iTau->tauID("againstElectronMVA6Raw"));
+               recoTauElectronCleanedAntiEleMVAVLoose.push_back(iTau->tauID("againstElectronVLooseMVA6"));
+               recoTauElectronCleanedAntiEleMVALoose.push_back(iTau->tauID("againstElectronLooseMVA6"));
+               recoTauElectronCleanedAntiEleMVAMedium.push_back(iTau->tauID("againstElectronMediumMVA6"));
+               recoTauElectronCleanedAntiEleMVATight.push_back(iTau->tauID("againstElectronTightMVA6"));
+               recoTauElectronCleanedAntiEleMVAVTight.push_back(iTau->tauID("againstElectronVTightMVA6"));
+           } // end if old anti-lep discs are available
+
+           else{
+               recoTauElectronCleanedAntiMuMVALoose.push_back(iTau->tauID("againstMuonLooseSimple"));
+               recoTauElectronCleanedAntiMuMVATight.push_back(iTau->tauID("againstMuonTightSimple"));
+               recoTauElectronCleanedAntiEleMVArawValue.push_back(iTau->tauID("againstElectronMVA6Raw2018"));
+               recoTauElectronCleanedAntiEleMVAVLoose.push_back(iTau->tauID("againstElectronVLooseMVA62018"));
+               recoTauElectronCleanedAntiEleMVALoose.push_back(iTau->tauID("againstElectronLooseMVA62018"));
+               recoTauElectronCleanedAntiEleMVAMedium.push_back(iTau->tauID("againstElectronMediumMVA62018"));
+               recoTauElectronCleanedAntiEleMVATight.push_back(iTau->tauID("againstElectronTightMVA62018"));
+               recoTauElectronCleanedAntiEleMVAVTight.push_back(iTau->tauID("againstElectronVTightMVA62018"));
+           } // end if new anti-lep discs are available
        } // end for loop on taus
    } // end if pTauElectronCleaned->size()>0
 
@@ -1264,15 +1303,28 @@ DiMuDiTauAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
                recoTauBoostedDeepVSjetVVVLoose.push_back(iTau->tauID("byVVVLooseDeepTau2017v2p1BoostedVSjet"));
            } // end if DeepTau ID available
 
-           recoTauBoostedAntiMuMVALoose.push_back(iTau->tauID("againstMuonLoose3"));
-           recoTauBoostedAntiMuMVATight.push_back(iTau->tauID("againstMuonTight3"));
-       
-           recoTauBoostedAntiEleMVArawValue.push_back(iTau->tauID("againstElectronMVA6Raw"));
-           recoTauBoostedAntiEleMVAVLoose.push_back(iTau->tauID("againstElectronVLooseMVA6"));
-           recoTauBoostedAntiEleMVALoose.push_back(iTau->tauID("againstElectronLooseMVA6"));
-           recoTauBoostedAntiEleMVAMedium.push_back(iTau->tauID("againstElectronMediumMVA6"));
-           recoTauBoostedAntiEleMVATight.push_back(iTau->tauID("againstElectronTightMVA6"));
-           recoTauBoostedAntiEleMVAVTight.push_back(iTau->tauID("againstElectronVTightMVA6"));
+           if (iTau->isTauIDAvailable("againstMuonLoose3"))
+           {
+               recoTauBoostedAntiMuMVALoose.push_back(iTau->tauID("againstMuonLoose3"));
+               recoTauBoostedAntiMuMVATight.push_back(iTau->tauID("againstMuonTight3"));
+               recoTauBoostedAntiEleMVArawValue.push_back(iTau->tauID("againstElectronMVA6Raw"));
+               recoTauBoostedAntiEleMVAVLoose.push_back(iTau->tauID("againstElectronVLooseMVA6"));
+               recoTauBoostedAntiEleMVALoose.push_back(iTau->tauID("againstElectronLooseMVA6"));
+               recoTauBoostedAntiEleMVAMedium.push_back(iTau->tauID("againstElectronMediumMVA6"));
+               recoTauBoostedAntiEleMVATight.push_back(iTau->tauID("againstElectronTightMVA6"));
+               recoTauBoostedAntiEleMVAVTight.push_back(iTau->tauID("againstElectronVTightMVA6"));
+           } // end if old anti-lep discs are available
+
+           else{
+               recoTauBoostedAntiMuMVALoose.push_back(iTau->tauID("againstMuonLooseSimple"));
+               recoTauBoostedAntiMuMVATight.push_back(iTau->tauID("againstMuonTightSimple"));
+               recoTauBoostedAntiEleMVArawValue.push_back(iTau->tauID("againstElectronMVA6Raw2018"));
+               recoTauBoostedAntiEleMVAVLoose.push_back(iTau->tauID("againstElectronVLooseMVA62018"));
+               recoTauBoostedAntiEleMVALoose.push_back(iTau->tauID("againstElectronLooseMVA62018"));
+               recoTauBoostedAntiEleMVAMedium.push_back(iTau->tauID("againstElectronMediumMVA62018"));
+               recoTauBoostedAntiEleMVATight.push_back(iTau->tauID("againstElectronTightMVA62018"));
+               recoTauBoostedAntiEleMVAVTight.push_back(iTau->tauID("againstElectronVTightMVA62018"));
+           } // end if new anti-lep discs are available
        } // end for loop on taus
    } // end if pTauBoosted->size()>0
 

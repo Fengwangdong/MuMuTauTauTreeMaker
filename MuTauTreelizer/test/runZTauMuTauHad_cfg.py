@@ -17,11 +17,11 @@ process.load("FWCore.MessageService.MessageLogger_cfi")
 ########### eg: cmsRun runZTauMuTauHad_cfg.py isMC=1 ###############
 ##########################################################################
 if options.isMC == 1:
-    print " ****** we will run on sample of: MC ******"
+    print (" ****** we will run on sample of: MC ******")
     process.load("MuMuTauTauTreeMaker.MuTauTreelizer.ZTauMuTauHadSelectorMC_cfi")
 
 else:
-    print " ****** we will run on sample of: data ******"
+    print (" ****** we will run on sample of: data ******")
     process.load("MuMuTauTauTreeMaker.MuTauTreelizer.ZTauMuTauHadSelector_cfi")
 
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
@@ -35,11 +35,11 @@ process.source = cms.Source("PoolSource",
 ######### embed 2017v2 tauID into the miniAOD ###############
 # reference: https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuidePFTauID#Rerunning_of_the_tau_ID_on_M_AN1
 if options.tauCluster <= 0:
-    print " ====== use slimmedTaus cluster ======"
+    print (" ====== use slimmedTaus cluster ======")
     updatedTauName = "slimmedTausNewID"
     import MuMuTauTauTreeMaker.MuTauTreelizer.TauIdDeep_slimmedTaus as tauIdConfig
     tauIdEmbedder = tauIdConfig.TauIDEmbedder(process, cms,
-            debug = True,
+            #debug = True,
             updatedTauName = updatedTauName,
             toKeep = ["deepTau2017v2p1","2017v2"]
             )
@@ -47,11 +47,11 @@ if options.tauCluster <= 0:
     process.rerunTauIDSequence = cms.Sequence(process.rerunMvaIsolationSequence * getattr(process,updatedTauName))
 
 elif options.tauCluster == 1:
-    print " ====== use slimmedTausMuonCleaned cluster ======"
+    print (" ====== use slimmedTausMuonCleaned cluster ======")
     updatedTauName = "slimmedTausNewID"
     import MuMuTauTauTreeMaker.MuTauTreelizer.TauIdDeep_slimmedTausMuonCleaned as tauIdConfig
     tauIdEmbedder = tauIdConfig.TauIDEmbedder(process, cms,
-            debug = True,
+            #debug = True,
             updatedTauName = updatedTauName,
             toKeep = ["deepTau2017v2p1","2017v2"]
             )
@@ -59,11 +59,11 @@ elif options.tauCluster == 1:
     process.rerunTauIDSequence = cms.Sequence(process.rerunMvaIsolationSequence * getattr(process,updatedTauName))
 
 elif options.tauCluster == 2:
-    print " ====== use slimmedTausElectronCleaned cluster ======"
+    print (" ====== use slimmedTausElectronCleaned cluster ======")
     updatedTauName = "slimmedTausNewID"
     import MuMuTauTauTreeMaker.MuTauTreelizer.TauIdDeep_slimmedTausElectronCleaned as tauIdConfig
     tauIdEmbedder = tauIdConfig.TauIDEmbedder(process, cms,
-            debug = True,
+            #debug = True,
             updatedTauName = updatedTauName,
             toKeep = ["deepTau2017v2p1","2017v2"]
             )

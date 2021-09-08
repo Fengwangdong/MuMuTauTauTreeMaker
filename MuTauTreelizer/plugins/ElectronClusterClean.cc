@@ -33,7 +33,7 @@
 #include "DataFormats/PatCandidates/interface/Electron.h"
 #include "DataFormats/PatCandidates/interface/Tau.h"
 #include "DataFormats/PatCandidates/interface/PackedCandidate.h"
-#include "RecoEgamma/EgammaTools/interface/EffectiveAreas.h"
+#include "CommonTools/Egamma/interface/EffectiveAreas.h"
 #include <math.h>
 
 using namespace std;
