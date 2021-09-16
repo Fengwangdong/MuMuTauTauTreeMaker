@@ -1092,39 +1092,39 @@ DiMuDiTauAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
                recoTauMuonCleanedIsoMVAVVTight.push_back(iTau->tauID("byVVTightIsolationMVArun2017v2DBoldDMwLT2017"));
            } // end if TauMVA ID available
 
-           if (iTau->isTauIDAvailable("byDeepTau2017v2p1MuonCleanedVSjetraw"))
+           if (iTau->isTauIDAvailable("byDeepTau2017v2p1VSjetraw"))
            {
-               recoTauMuonCleanedDeepVSeraw.push_back(iTau->tauID("byDeepTau2017v2p1MuonCleanedVSeraw"));
-               recoTauMuonCleanedDeepVSjetraw.push_back(iTau->tauID("byDeepTau2017v2p1MuonCleanedVSjetraw"));
-               recoTauMuonCleanedDeepVSmuraw.push_back(iTau->tauID("byDeepTau2017v2p1MuonCleanedVSmuraw"));
+               recoTauMuonCleanedDeepVSeraw.push_back(iTau->tauID("byDeepTau2017v2p1VSeraw"));
+               recoTauMuonCleanedDeepVSjetraw.push_back(iTau->tauID("byDeepTau2017v2p1VSjetraw"));
+               recoTauMuonCleanedDeepVSmuraw.push_back(iTau->tauID("byDeepTau2017v2p1VSmuraw"));
 
-               recoTauMuonCleanedDeepVSeLoose.push_back(iTau->tauID("byLooseDeepTau2017v2p1MuonCleanedVSe"));
-               recoTauMuonCleanedDeepVSjetLoose.push_back(iTau->tauID("byLooseDeepTau2017v2p1MuonCleanedVSjet"));
-               recoTauMuonCleanedDeepVSmuLoose.push_back(iTau->tauID("byLooseDeepTau2017v2p1MuonCleanedVSmu"));
+               recoTauMuonCleanedDeepVSeLoose.push_back(iTau->tauID("byLooseDeepTau2017v2p1VSe"));
+               recoTauMuonCleanedDeepVSjetLoose.push_back(iTau->tauID("byLooseDeepTau2017v2p1VSjet"));
+               recoTauMuonCleanedDeepVSmuLoose.push_back(iTau->tauID("byLooseDeepTau2017v2p1VSmu"));
 
-               recoTauMuonCleanedDeepVSeMedium.push_back(iTau->tauID("byMediumDeepTau2017v2p1MuonCleanedVSe"));
-               recoTauMuonCleanedDeepVSjetMedium.push_back(iTau->tauID("byMediumDeepTau2017v2p1MuonCleanedVSjet"));
-               recoTauMuonCleanedDeepVSmuMedium.push_back(iTau->tauID("byMediumDeepTau2017v2p1MuonCleanedVSmu"));
+               recoTauMuonCleanedDeepVSeMedium.push_back(iTau->tauID("byMediumDeepTau2017v2p1VSe"));
+               recoTauMuonCleanedDeepVSjetMedium.push_back(iTau->tauID("byMediumDeepTau2017v2p1VSjet"));
+               recoTauMuonCleanedDeepVSmuMedium.push_back(iTau->tauID("byMediumDeepTau2017v2p1VSmu"));
 
-               recoTauMuonCleanedDeepVSeTight.push_back(iTau->tauID("byTightDeepTau2017v2p1MuonCleanedVSe"));
-               recoTauMuonCleanedDeepVSjetTight.push_back(iTau->tauID("byTightDeepTau2017v2p1MuonCleanedVSjet"));
-               recoTauMuonCleanedDeepVSmuTight.push_back(iTau->tauID("byTightDeepTau2017v2p1MuonCleanedVSmu"));
+               recoTauMuonCleanedDeepVSeTight.push_back(iTau->tauID("byTightDeepTau2017v2p1VSe"));
+               recoTauMuonCleanedDeepVSjetTight.push_back(iTau->tauID("byTightDeepTau2017v2p1VSjet"));
+               recoTauMuonCleanedDeepVSmuTight.push_back(iTau->tauID("byTightDeepTau2017v2p1VSmu"));
 
-               recoTauMuonCleanedDeepVSeVLoose.push_back(iTau->tauID("byVLooseDeepTau2017v2p1MuonCleanedVSe"));
-               recoTauMuonCleanedDeepVSjetVLoose.push_back(iTau->tauID("byVLooseDeepTau2017v2p1MuonCleanedVSjet"));
-               recoTauMuonCleanedDeepVSmuVLoose.push_back(iTau->tauID("byVLooseDeepTau2017v2p1MuonCleanedVSmu"));
+               recoTauMuonCleanedDeepVSeVLoose.push_back(iTau->tauID("byVLooseDeepTau2017v2p1VSe"));
+               recoTauMuonCleanedDeepVSjetVLoose.push_back(iTau->tauID("byVLooseDeepTau2017v2p1VSjet"));
+               recoTauMuonCleanedDeepVSmuVLoose.push_back(iTau->tauID("byVLooseDeepTau2017v2p1VSmu"));
 
-               recoTauMuonCleanedDeepVSeVTight.push_back(iTau->tauID("byVTightDeepTau2017v2p1MuonCleanedVSe"));
-               recoTauMuonCleanedDeepVSjetVTight.push_back(iTau->tauID("byVTightDeepTau2017v2p1MuonCleanedVSjet"));
+               recoTauMuonCleanedDeepVSeVTight.push_back(iTau->tauID("byVTightDeepTau2017v2p1VSe"));
+               recoTauMuonCleanedDeepVSjetVTight.push_back(iTau->tauID("byVTightDeepTau2017v2p1VSjet"));
 
-               recoTauMuonCleanedDeepVSeVVLoose.push_back(iTau->tauID("byVVLooseDeepTau2017v2p1MuonCleanedVSe"));
-               recoTauMuonCleanedDeepVSjetVVLoose.push_back(iTau->tauID("byVVLooseDeepTau2017v2p1MuonCleanedVSjet"));
+               recoTauMuonCleanedDeepVSeVVLoose.push_back(iTau->tauID("byVVLooseDeepTau2017v2p1VSe"));
+               recoTauMuonCleanedDeepVSjetVVLoose.push_back(iTau->tauID("byVVLooseDeepTau2017v2p1VSjet"));
 
-               recoTauMuonCleanedDeepVSeVVTight.push_back(iTau->tauID("byVVTightDeepTau2017v2p1MuonCleanedVSe"));
-               recoTauMuonCleanedDeepVSjetVVTight.push_back(iTau->tauID("byVVTightDeepTau2017v2p1MuonCleanedVSjet"));
+               recoTauMuonCleanedDeepVSeVVTight.push_back(iTau->tauID("byVVTightDeepTau2017v2p1VSe"));
+               recoTauMuonCleanedDeepVSjetVVTight.push_back(iTau->tauID("byVVTightDeepTau2017v2p1VSjet"));
 
-               recoTauMuonCleanedDeepVSeVVVLoose.push_back(iTau->tauID("byVVVLooseDeepTau2017v2p1MuonCleanedVSe"));
-               recoTauMuonCleanedDeepVSjetVVVLoose.push_back(iTau->tauID("byVVVLooseDeepTau2017v2p1MuonCleanedVSjet"));
+               recoTauMuonCleanedDeepVSeVVVLoose.push_back(iTau->tauID("byVVVLooseDeepTau2017v2p1VSe"));
+               recoTauMuonCleanedDeepVSjetVVVLoose.push_back(iTau->tauID("byVVVLooseDeepTau2017v2p1VSjet"));
            } // end if DeepTau ID available
 
            if (iTau->isTauIDAvailable("againstMuonLoose3"))
@@ -1180,39 +1180,39 @@ DiMuDiTauAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
                recoTauElectronCleanedIsoMVAVVTight.push_back(iTau->tauID("byVVTightIsolationMVArun2017v2DBoldDMwLT2017"));
            } // end if TauMVA ID available
 
-           if (iTau->isTauIDAvailable("byDeepTau2017v2p1ElectronCleanedVSjetraw"))
+           if (iTau->isTauIDAvailable("byDeepTau2017v2p1VSjetraw"))
            {
-               recoTauElectronCleanedDeepVSeraw.push_back(iTau->tauID("byDeepTau2017v2p1ElectronCleanedVSeraw"));
-               recoTauElectronCleanedDeepVSjetraw.push_back(iTau->tauID("byDeepTau2017v2p1ElectronCleanedVSjetraw"));
-               recoTauElectronCleanedDeepVSmuraw.push_back(iTau->tauID("byDeepTau2017v2p1ElectronCleanedVSmuraw"));
+               recoTauElectronCleanedDeepVSeraw.push_back(iTau->tauID("byDeepTau2017v2p1VSeraw"));
+               recoTauElectronCleanedDeepVSjetraw.push_back(iTau->tauID("byDeepTau2017v2p1VSjetraw"));
+               recoTauElectronCleanedDeepVSmuraw.push_back(iTau->tauID("byDeepTau2017v2p1VSmuraw"));
 
-               recoTauElectronCleanedDeepVSeLoose.push_back(iTau->tauID("byLooseDeepTau2017v2p1ElectronCleanedVSe"));
-               recoTauElectronCleanedDeepVSjetLoose.push_back(iTau->tauID("byLooseDeepTau2017v2p1ElectronCleanedVSjet"));
-               recoTauElectronCleanedDeepVSmuLoose.push_back(iTau->tauID("byLooseDeepTau2017v2p1ElectronCleanedVSmu"));
+               recoTauElectronCleanedDeepVSeLoose.push_back(iTau->tauID("byLooseDeepTau2017v2p1VSe"));
+               recoTauElectronCleanedDeepVSjetLoose.push_back(iTau->tauID("byLooseDeepTau2017v2p1VSjet"));
+               recoTauElectronCleanedDeepVSmuLoose.push_back(iTau->tauID("byLooseDeepTau2017v2p1VSmu"));
 
-               recoTauElectronCleanedDeepVSeMedium.push_back(iTau->tauID("byMediumDeepTau2017v2p1ElectronCleanedVSe"));
-               recoTauElectronCleanedDeepVSjetMedium.push_back(iTau->tauID("byMediumDeepTau2017v2p1ElectronCleanedVSjet"));
-               recoTauElectronCleanedDeepVSmuMedium.push_back(iTau->tauID("byMediumDeepTau2017v2p1ElectronCleanedVSmu"));
+               recoTauElectronCleanedDeepVSeMedium.push_back(iTau->tauID("byMediumDeepTau2017v2p1VSe"));
+               recoTauElectronCleanedDeepVSjetMedium.push_back(iTau->tauID("byMediumDeepTau2017v2p1VSjet"));
+               recoTauElectronCleanedDeepVSmuMedium.push_back(iTau->tauID("byMediumDeepTau2017v2p1VSmu"));
 
-               recoTauElectronCleanedDeepVSeTight.push_back(iTau->tauID("byTightDeepTau2017v2p1ElectronCleanedVSe"));
-               recoTauElectronCleanedDeepVSjetTight.push_back(iTau->tauID("byTightDeepTau2017v2p1ElectronCleanedVSjet"));
-               recoTauElectronCleanedDeepVSmuTight.push_back(iTau->tauID("byTightDeepTau2017v2p1ElectronCleanedVSmu"));
+               recoTauElectronCleanedDeepVSeTight.push_back(iTau->tauID("byTightDeepTau2017v2p1VSe"));
+               recoTauElectronCleanedDeepVSjetTight.push_back(iTau->tauID("byTightDeepTau2017v2p1VSjet"));
+               recoTauElectronCleanedDeepVSmuTight.push_back(iTau->tauID("byTightDeepTau2017v2p1VSmu"));
 
-               recoTauElectronCleanedDeepVSeVLoose.push_back(iTau->tauID("byVLooseDeepTau2017v2p1ElectronCleanedVSe"));
-               recoTauElectronCleanedDeepVSjetVLoose.push_back(iTau->tauID("byVLooseDeepTau2017v2p1ElectronCleanedVSjet"));
-               recoTauElectronCleanedDeepVSmuVLoose.push_back(iTau->tauID("byVLooseDeepTau2017v2p1ElectronCleanedVSmu"));
+               recoTauElectronCleanedDeepVSeVLoose.push_back(iTau->tauID("byVLooseDeepTau2017v2p1VSe"));
+               recoTauElectronCleanedDeepVSjetVLoose.push_back(iTau->tauID("byVLooseDeepTau2017v2p1VSjet"));
+               recoTauElectronCleanedDeepVSmuVLoose.push_back(iTau->tauID("byVLooseDeepTau2017v2p1VSmu"));
 
-               recoTauElectronCleanedDeepVSeVTight.push_back(iTau->tauID("byVTightDeepTau2017v2p1ElectronCleanedVSe"));
-               recoTauElectronCleanedDeepVSjetVTight.push_back(iTau->tauID("byVTightDeepTau2017v2p1ElectronCleanedVSjet"));
+               recoTauElectronCleanedDeepVSeVTight.push_back(iTau->tauID("byVTightDeepTau2017v2p1VSe"));
+               recoTauElectronCleanedDeepVSjetVTight.push_back(iTau->tauID("byVTightDeepTau2017v2p1VSjet"));
 
-               recoTauElectronCleanedDeepVSeVVLoose.push_back(iTau->tauID("byVVLooseDeepTau2017v2p1ElectronCleanedVSe"));
-               recoTauElectronCleanedDeepVSjetVVLoose.push_back(iTau->tauID("byVVLooseDeepTau2017v2p1ElectronCleanedVSjet"));
+               recoTauElectronCleanedDeepVSeVVLoose.push_back(iTau->tauID("byVVLooseDeepTau2017v2p1VSe"));
+               recoTauElectronCleanedDeepVSjetVVLoose.push_back(iTau->tauID("byVVLooseDeepTau2017v2p1VSjet"));
 
-               recoTauElectronCleanedDeepVSeVVTight.push_back(iTau->tauID("byVVTightDeepTau2017v2p1ElectronCleanedVSe"));
-               recoTauElectronCleanedDeepVSjetVVTight.push_back(iTau->tauID("byVVTightDeepTau2017v2p1ElectronCleanedVSjet"));
+               recoTauElectronCleanedDeepVSeVVTight.push_back(iTau->tauID("byVVTightDeepTau2017v2p1VSe"));
+               recoTauElectronCleanedDeepVSjetVVTight.push_back(iTau->tauID("byVVTightDeepTau2017v2p1VSjet"));
 
-               recoTauElectronCleanedDeepVSeVVVLoose.push_back(iTau->tauID("byVVVLooseDeepTau2017v2p1ElectronCleanedVSe"));
-               recoTauElectronCleanedDeepVSjetVVVLoose.push_back(iTau->tauID("byVVVLooseDeepTau2017v2p1ElectronCleanedVSjet"));
+               recoTauElectronCleanedDeepVSeVVVLoose.push_back(iTau->tauID("byVVVLooseDeepTau2017v2p1VSe"));
+               recoTauElectronCleanedDeepVSjetVVVLoose.push_back(iTau->tauID("byVVVLooseDeepTau2017v2p1VSjet"));
            } // end if DeepTau ID available
 
            if (iTau->isTauIDAvailable("againstMuonLoose3"))
@@ -1268,39 +1268,39 @@ DiMuDiTauAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
                recoTauBoostedIsoMVAVVTight.push_back(iTau->tauID("byVVTightIsolationMVArun2017v2DBoldDMwLT2017"));
            } // end if TauMVA ID available
 
-           if (iTau->isTauIDAvailable("byDeepTau2017v2p1BoostedVSjetraw"))
+           if (iTau->isTauIDAvailable("byDeepTau2017v2p1VSjetraw"))
            {
-               recoTauBoostedDeepVSeraw.push_back(iTau->tauID("byDeepTau2017v2p1BoostedVSeraw"));
-               recoTauBoostedDeepVSjetraw.push_back(iTau->tauID("byDeepTau2017v2p1BoostedVSjetraw"));
-               recoTauBoostedDeepVSmuraw.push_back(iTau->tauID("byDeepTau2017v2p1BoostedVSmuraw"));
+               recoTauBoostedDeepVSeraw.push_back(iTau->tauID("byDeepTau2017v2p1VSeraw"));
+               recoTauBoostedDeepVSjetraw.push_back(iTau->tauID("byDeepTau2017v2p1VSjetraw"));
+               recoTauBoostedDeepVSmuraw.push_back(iTau->tauID("byDeepTau2017v2p1VSmuraw"));
 
-               recoTauBoostedDeepVSeLoose.push_back(iTau->tauID("byLooseDeepTau2017v2p1BoostedVSe"));
-               recoTauBoostedDeepVSjetLoose.push_back(iTau->tauID("byLooseDeepTau2017v2p1BoostedVSjet"));
-               recoTauBoostedDeepVSmuLoose.push_back(iTau->tauID("byLooseDeepTau2017v2p1BoostedVSmu"));
+               recoTauBoostedDeepVSeLoose.push_back(iTau->tauID("byLooseDeepTau2017v2p1VSe"));
+               recoTauBoostedDeepVSjetLoose.push_back(iTau->tauID("byLooseDeepTau2017v2p1VSjet"));
+               recoTauBoostedDeepVSmuLoose.push_back(iTau->tauID("byLooseDeepTau2017v2p1VSmu"));
 
-               recoTauBoostedDeepVSeMedium.push_back(iTau->tauID("byMediumDeepTau2017v2p1BoostedVSe"));
-               recoTauBoostedDeepVSjetMedium.push_back(iTau->tauID("byMediumDeepTau2017v2p1BoostedVSjet"));
-               recoTauBoostedDeepVSmuMedium.push_back(iTau->tauID("byMediumDeepTau2017v2p1BoostedVSmu"));
+               recoTauBoostedDeepVSeMedium.push_back(iTau->tauID("byMediumDeepTau2017v2p1VSe"));
+               recoTauBoostedDeepVSjetMedium.push_back(iTau->tauID("byMediumDeepTau2017v2p1VSjet"));
+               recoTauBoostedDeepVSmuMedium.push_back(iTau->tauID("byMediumDeepTau2017v2p1VSmu"));
 
-               recoTauBoostedDeepVSeTight.push_back(iTau->tauID("byTightDeepTau2017v2p1BoostedVSe"));
-               recoTauBoostedDeepVSjetTight.push_back(iTau->tauID("byTightDeepTau2017v2p1BoostedVSjet"));
-               recoTauBoostedDeepVSmuTight.push_back(iTau->tauID("byTightDeepTau2017v2p1BoostedVSmu"));
+               recoTauBoostedDeepVSeTight.push_back(iTau->tauID("byTightDeepTau2017v2p1VSe"));
+               recoTauBoostedDeepVSjetTight.push_back(iTau->tauID("byTightDeepTau2017v2p1VSjet"));
+               recoTauBoostedDeepVSmuTight.push_back(iTau->tauID("byTightDeepTau2017v2p1VSmu"));
 
-               recoTauBoostedDeepVSeVLoose.push_back(iTau->tauID("byVLooseDeepTau2017v2p1BoostedVSe"));
-               recoTauBoostedDeepVSjetVLoose.push_back(iTau->tauID("byVLooseDeepTau2017v2p1BoostedVSjet"));
-               recoTauBoostedDeepVSmuVLoose.push_back(iTau->tauID("byVLooseDeepTau2017v2p1BoostedVSmu"));
+               recoTauBoostedDeepVSeVLoose.push_back(iTau->tauID("byVLooseDeepTau2017v2p1VSe"));
+               recoTauBoostedDeepVSjetVLoose.push_back(iTau->tauID("byVLooseDeepTau2017v2p1VSjet"));
+               recoTauBoostedDeepVSmuVLoose.push_back(iTau->tauID("byVLooseDeepTau2017v2p1VSmu"));
 
-               recoTauBoostedDeepVSeVTight.push_back(iTau->tauID("byVTightDeepTau2017v2p1BoostedVSe"));
-               recoTauBoostedDeepVSjetVTight.push_back(iTau->tauID("byVTightDeepTau2017v2p1BoostedVSjet"));
+               recoTauBoostedDeepVSeVTight.push_back(iTau->tauID("byVTightDeepTau2017v2p1VSe"));
+               recoTauBoostedDeepVSjetVTight.push_back(iTau->tauID("byVTightDeepTau2017v2p1VSjet"));
 
-               recoTauBoostedDeepVSeVVLoose.push_back(iTau->tauID("byVVLooseDeepTau2017v2p1BoostedVSe"));
-               recoTauBoostedDeepVSjetVVLoose.push_back(iTau->tauID("byVVLooseDeepTau2017v2p1BoostedVSjet"));
+               recoTauBoostedDeepVSeVVLoose.push_back(iTau->tauID("byVVLooseDeepTau2017v2p1VSe"));
+               recoTauBoostedDeepVSjetVVLoose.push_back(iTau->tauID("byVVLooseDeepTau2017v2p1VSjet"));
 
-               recoTauBoostedDeepVSeVVTight.push_back(iTau->tauID("byVVTightDeepTau2017v2p1BoostedVSe"));
-               recoTauBoostedDeepVSjetVVTight.push_back(iTau->tauID("byVVTightDeepTau2017v2p1BoostedVSjet"));
+               recoTauBoostedDeepVSeVVTight.push_back(iTau->tauID("byVVTightDeepTau2017v2p1VSe"));
+               recoTauBoostedDeepVSjetVVTight.push_back(iTau->tauID("byVVTightDeepTau2017v2p1VSjet"));
 
-               recoTauBoostedDeepVSeVVVLoose.push_back(iTau->tauID("byVVVLooseDeepTau2017v2p1BoostedVSe"));
-               recoTauBoostedDeepVSjetVVVLoose.push_back(iTau->tauID("byVVVLooseDeepTau2017v2p1BoostedVSjet"));
+               recoTauBoostedDeepVSeVVVLoose.push_back(iTau->tauID("byVVVLooseDeepTau2017v2p1VSe"));
+               recoTauBoostedDeepVSjetVVVLoose.push_back(iTau->tauID("byVVVLooseDeepTau2017v2p1VSjet"));
            } // end if DeepTau ID available
 
            if (iTau->isTauIDAvailable("againstMuonLoose3"))
