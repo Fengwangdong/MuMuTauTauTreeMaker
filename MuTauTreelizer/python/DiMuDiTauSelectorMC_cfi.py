@@ -17,7 +17,7 @@ HLTEle = cms.EDFilter("HLTHighLevel",
 MuonID = cms.EDFilter("MuonID",
         muonTag = cms.InputTag('slimmedMuons'),
         muonID = cms.string('loose'),
-        minNumObjsToPassFilter = cms.int32(2),
+        minNumObjsToPassFilter = cms.int32(1),
 )
 
 MuonSelector = cms.EDFilter("MuonSelector",
