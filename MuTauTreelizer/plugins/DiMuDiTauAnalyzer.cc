@@ -404,8 +404,10 @@ class DiMuDiTauAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>
       vector<float> recoJetPhi;
       vector<float> recoJetEnergy;
       vector<float> recoJetCSV;
-      vector<float> recoJetDeepDiTauValue;
-      vector<float> recoJetDeepDiTauValueMD;
+      vector<float> recoJetDeepDiTauValuev1;
+      vector<float> recoJetDeepDiTauValueMDv1;
+      vector<float> recoJetDeepDiTauValuev2;
+      vector<float> recoJetDeepDiTauValueMDv2;
       vector<int> recoJetIdLoose;
       vector<int> recoJetIdTight;
       vector<int> recoJetIdTightLepVeto;
@@ -1572,8 +1574,10 @@ DiMuDiTauAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
            // reference: https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookMiniAOD2017#Jets
            // https://twiki.cern.ch/twiki/bin/viewauth/CMS/BtagRecommendation80XReReco#Supported_Algorithms_and_Operati
            recoJetCSV.push_back(iJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags"));
-           recoJetDeepDiTauValue.push_back(iJet->userFloat("ditau2017v1"));
-           recoJetDeepDiTauValueMD.push_back(iJet->userFloat("ditau2017MDv1"));
+           recoJetDeepDiTauValuev1.push_back(iJet->userFloat("ditau2017v1"));
+           recoJetDeepDiTauValueMDv1.push_back(iJet->userFloat("ditau2017MDv1"));
+	   recoJetDeepDiTauValuev2.push_back(iJet->userFloat("ditau2017v2"));
+           recoJetDeepDiTauValueMDv2.push_back(iJet->userFloat("ditau2017MDv2"));
            recoJetIdLoose.push_back(iJet->userInt("idLoose"));
            recoJetIdTight.push_back(iJet->userInt("idTight"));
            recoJetIdTightLepVeto.push_back(iJet->userInt("idTightLepVeto"));
@@ -1898,8 +1902,10 @@ DiMuDiTauAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
    recoJetPhi.clear();
    recoJetEnergy.clear();
    recoJetCSV.clear();
-   recoJetDeepDiTauValue.clear();
-   recoJetDeepDiTauValueMD.clear();
+   recoJetDeepDiTauValuev1.clear();
+   recoJetDeepDiTauValueMDv1.clear();
+   recoJetDeepDiTauValuev2.clear();
+   recoJetDeepDiTauValueMDv2.clear();
    recoJetIdLoose.clear();
    recoJetIdTight.clear();
    recoJetIdTightLepVeto.clear();
@@ -2381,8 +2387,10 @@ DiMuDiTauAnalyzer::beginJob()
     objectTree->Branch("recoJetPhi", &recoJetPhi);
     objectTree->Branch("recoJetEnergy", &recoJetEnergy);
     objectTree->Branch("recoJetCSV", &recoJetCSV);
-    objectTree->Branch("recoJetDeepDiTauValue", &recoJetDeepDiTauValue);
-    objectTree->Branch("recoJetDeepDiTauValueMD", &recoJetDeepDiTauValueMD);
+    objectTree->Branch("recoJetDeepDiTauValuev1", &recoJetDeepDiTauValuev1);
+    objectTree->Branch("recoJetDeepDiTauValueMDv1", &recoJetDeepDiTauValueMDv1);
+    objectTree->Branch("recoJetDeepDiTauValuev2", &recoJetDeepDiTauValuev2);
+    objectTree->Branch("recoJetDeepDiTauValueMDv2", &recoJetDeepDiTauValueMDv2);
     objectTree->Branch("recoJetIdLoose", &recoJetIdLoose);
     objectTree->Branch("recoJetIdTight", &recoJetIdTight);
     objectTree->Branch("recoJetIdTightLepVeto", &recoJetIdTightLepVeto);

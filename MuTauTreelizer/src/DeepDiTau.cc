@@ -165,6 +165,97 @@ namespace {
 
   }  // namespace ditauInputs_2017_v1
 
+  namespace ditauInputs_2017_v2 {
+    constexpr int NumberOfOutputs = 3;
+    constexpr int NumberOfChargedHadrons = 10;
+    constexpr int NumberOfNeutralHadrons = 10;
+    constexpr int NumberOfPhotons = 4;
+    namespace JetBlockInputs {
+      enum vars {
+        jet_pt = 0,
+        jet_eta,
+        jet_phi,
+        jet_mass,
+        jet_jetCharge,
+        jet_chargedMultiplicity,
+        jet_neutralMultiplicity,
+        jet_chargedHadronMultiplicity,
+        jet_neutralHadronMultiplicity,
+        jet_muonMultiplicity,
+        jet_electronMultiplicity,
+        jet_photonMultiplicity,
+        jet_chargedEmEnergy,
+        jet_neutralEmEnergy,
+        jet_chargedHadronEnergy,
+        jet_neutralHadronEnergy,
+        jet_muonEnergy,
+        jet_electronEnergy,
+        jet_photonEnergy,
+        jet_chargedEmEnergyFraction,
+        jet_neutralEmEnergyFraction,
+        jet_chargedHadronEnergyFraction,
+        jet_neutralHadronEnergyFraction,
+        jet_muonEnergyFraction,
+        jet_electronEnergyFraction,
+	jet_photonEnergyFraction,
+        jet_pfDeepCSVJetTags_probb,
+        jet_pfDeepCSVJetTags_probc,
+        jet_pfDeepCSVJetTags_probudsg,
+        jet_pfDeepCSVJetTags_probbb,
+        NumberOfInputs
+      };
+    }
+
+    namespace ChargedHadronBlockInputs {
+      enum vars {
+        charged_hadron_pt = 0,
+        charged_hadron_eta,
+        charged_hadron_phi,
+        charged_hadron_charge,
+        charged_hadron_etaAtVtx,
+        charged_hadron_phiAtVtx,
+        charged_hadron_vx,
+        charged_hadron_vy,
+        charged_hadron_vz,
+        charged_hadron_dxy,
+        charged_hadron_dz,
+        charged_hadron_pixelLayersWithMeasurement,
+        charged_hadron_stripLayersWithMeasurement,
+        charged_hadron_trackerLayersWithMeasurement,
+	charged_hadron_trackHighPurity,
+        charged_hadron_puppiWeight,
+        charged_hadron_puppiWeightNoLep,
+        charged_hadron_isIsolatedChargedHadron,
+        NumberOfInputs
+      };
+    }
+
+    namespace NeutralHadronBlockInputs {
+      enum vars {
+        neutral_hadron_pt = 0,
+        neutral_hadron_eta,
+        neutral_hadron_phi,
+        neutral_hadron_puppiWeight,
+        neutral_hadron_puppiWeightNoLep,
+        NumberOfInputs
+      };
+    }
+    namespace PhotonBlockInputs {
+      enum vars {
+        photon_pt = 0,
+        photon_eta,
+        photon_phi,
+        photon_puppiWeight,
+	photon_puppiWeightNoLep,
+        photon_isGoodEgamma,
+        NumberOfInputs
+      };
+    }
+
+  }  // namespace DeepDiTauInputs v2
+
+
+
 }  // anonymous namespace
 
   
@@ -243,6 +334,36 @@ void DeepDiTau::configure(const edm::ParameterSet& iConfig)
       //outputName_ = "concatenate_2/concat"; // TODO lookup, and probably rerun and give a more consistent name
       outputName_ = "ID_pred/Softmax";
     }
+    else if (name_== "ditau2017v2"){
+      inputNames_.push_back("input_1");
+      inputShapes_.push_back(tensorflow::TensorShape{1, ditauInputs_2017_v2::JetBlockInputs::NumberOfInputs});
+      kJet_ = 0;
+      inputNames_.push_back("input_2");
+      inputShapes_.push_back(tensorflow::TensorShape{1, ditauInputs_2017_v2::ChargedHadronBlockInputs::NumberOfInputs, ditauInputs_2017_v2::NumberOfChargedHadrons});
+      kChargedHadron_ = 1;
+      inputNames_.push_back("input_3");
+      inputShapes_.push_back(tensorflow::TensorShape{1, ditauInputs_2017_v2::NeutralHadronBlockInputs::NumberOfInputs, ditauInputs_2017_v2::NumberOfNeutralHadrons});
+      kNeutralHadron_ = 2;
+      inputNames_.push_back("input_4");
+      inputShapes_.push_back(tensorflow::TensorShape{1, ditauInputs_2017_v2::PhotonBlockInputs::NumberOfInputs, ditauInputs_2017_v2::NumberOfPhotons});
+      kPhoton_ = 3;
+      outputName_ = "ID_pred/Softmax";
+    }
+    else if (name_== "ditau2017MDv2"){
+      inputNames_.push_back("input_1");
+      inputShapes_.push_back(tensorflow::TensorShape{1, ditauInputs_2017_v2::JetBlockInputs::NumberOfInputs});
+      kJet_ = 0;
+      inputNames_.push_back("input_2");
+      inputShapes_.push_back(tensorflow::TensorShape{1, ditauInputs_2017_v2::ChargedHadronBlockInputs::NumberOfInputs, ditauInputs_2017_v2::NumberOfChargedHadrons});
+      kChargedHadron_ = 1;
+      inputNames_.push_back("input_3");
+      inputShapes_.push_back(tensorflow::TensorShape{1, ditauInputs_2017_v2::NeutralHadronBlockInputs::NumberOfInputs, ditauInputs_2017_v2::NumberOfNeutralHadrons});
+      kNeutralHadron_ = 2;
+      inputNames_.push_back("input_4");
+      inputShapes_.push_back(tensorflow::TensorShape{1, ditauInputs_2017_v2::PhotonBlockInputs::NumberOfInputs, ditauInputs_2017_v2::NumberOfPhotons});
+      kPhoton_ = 3;
+      outputName_ = "ID_pred/Softmax";
+    }
 
     inputTensors_.resize(inputShapes_.size());
     for (size_t i=0; i<inputShapes_.size(); i++) {
@@ -318,6 +439,32 @@ tensorflow::Tensor DeepDiTau::getPrediction(const pat::Jet& jet) {
       prediction.matrix<float>()(0, k) = pred;
     }
   } // ditau2017MDv1
+
+  if (name_=="ditau2017v2") {
+    getPrediction_2017_v2(jet, pred_vector);
+    prediction = tensorflow::Tensor(tensorflow::DT_FLOAT, {1, ditauInputs_2017_v2::NumberOfOutputs});
+    for (int k = 0; k < ditauInputs_2017_v2::NumberOfOutputs; ++k) {
+      const float pred = pred_vector[0].flat<float>()(k); // just one prediction vector for now
+      if (!(pred >= 0 && pred <= 1)) {
+        throw cms::Exception("DeepDiTau")
+	  << "invalid prediction = " << pred << " for pred_index = " << k;
+      }
+      prediction.matrix<float>()(0, k) = pred;
+    }
+  } // ditau2017v2
+  else if (name_=="ditau2017MDv2") {
+    getPrediction_2017_md_v2(jet, pred_vector);
+    prediction = tensorflow::Tensor(tensorflow::DT_FLOAT, {1, ditauInputs_2017_v2::NumberOfOutputs+1});
+    for (int k = 0; k < ditauInputs_2017_v2::NumberOfOutputs; ++k) {
+      const float pred = pred_vector[0].flat<float>()(k); // just one prediction vector for now
+      if (!(pred >= 0 && pred <= 1)) {
+        throw cms::Exception("DeepDiTau")
+	  << "invalid prediction = " << pred << " for pred_index = " << k;
+      }
+      prediction.matrix<float>()(0, k) = pred;
+    }
+  } // ditau2017MDv2
+
   else {
     prediction = tensorflow::Tensor(tensorflow::DT_FLOAT, {1, empty::NumberOfOutputs});
     prediction.matrix<float>().setZero();
@@ -391,6 +538,33 @@ void DeepDiTau::getPrediction_2017_md_v1(const pat::Jet& jet, std::vector<tensor
   //std::cout << pred_vector[0].matrix<float>() << std::endl;
 
 }
+
+// ditau2017v2
+void DeepDiTau::getPrediction_2017_v2(const pat::Jet& jet, std::vector<tensorflow::Tensor>& pred_vector) {
+  createJetBlockInputs_v2(jet);
+  createChargedHadronBlockInputs_v2(jet);
+  createNeutralHadronBlockInputs_v2(jet);
+  createPhotonBlockInputs_v2(jet);
+  //createMassInput(jet);                                                                                                                                  
+
+  tensorflow::run(&(cache_->getSession(name_)),
+                  inputTensors_,
+                  {outputName_},
+                  &pred_vector);
+}
+
+void DeepDiTau::getPrediction_2017_md_v2(const pat::Jet& jet, std::vector<tensorflow::Tensor>& pred_vector) {
+  createJetBlockInputs_v2(jet);
+  createChargedHadronBlockInputs_v2(jet);
+  createNeutralHadronBlockInputs_v2(jet);
+  createPhotonBlockInputs_v2(jet);
+  //createMassInput(jet);
+  tensorflow::run(&(cache_->getSession(name_)),
+                  inputTensors_,
+                  {outputName_},
+                  &pred_vector);
+}
+
 
 void DeepDiTau::createMassInput(const pat::Jet& jet) {
     tensorflow::Tensor& inputs = inputTensors_.at(kMass_).second;
@@ -732,3 +906,192 @@ void DeepDiTau::createPhotonBlockInputs(const pat::Jet& jet) {
 
 }
 
+void DeepDiTau::createJetBlockInputs_v2(const pat::Jet& jet) {
+  tensorflow::Tensor& inputs = inputTensors_.at(kJet_).second;
+  inputs.flat<float>().setZero();
+
+  namespace dnn = ditauInputs_2017_v2::JetBlockInputs;
+  int v;
+  v = dnn::jet_pt;
+  inputs.matrix<float>()(0, v) = getValueLogLinear(jet.pt(), means_[v], sigmas_[v]);
+  v = dnn::jet_eta;
+  inputs.matrix<float>()(0, v) = getValueLinear(jet.eta(), means_[v], sigmas_[v]);
+  v = dnn::jet_phi;
+  inputs.matrix<float>()(0, v) = getValueLinear(jet.phi(), means_[v], sigmas_[v]);
+  v = dnn::jet_mass;
+  inputs.matrix<float>()(0, v) = getValueNorm(jet.mass(), means_[v], sigmas_[v]);
+  v = dnn::jet_jetCharge;
+  inputs.matrix<float>()(0, v) = getValueNorm(jet.jetCharge(), means_[v], sigmas_[v]);
+  v = dnn::jet_chargedMultiplicity;
+  inputs.matrix<float>()(0, v) = getValueNorm(jet.chargedMultiplicity(), means_[v], sigmas_[v]);
+  v = dnn::jet_neutralMultiplicity;
+  inputs.matrix<float>()(0, v) = getValueNorm(jet.neutralMultiplicity(), means_[v], sigmas_[v]);
+  v = dnn::jet_chargedHadronMultiplicity;
+  inputs.matrix<float>()(0, v) = getValueNorm(jet.chargedHadronMultiplicity(), means_[v], sigmas_[v]);
+  v = dnn::jet_neutralHadronMultiplicity;
+  inputs.matrix<float>()(0, v) = getValueNorm(jet.neutralHadronMultiplicity(), means_[v], sigmas_[v]);
+  v = dnn::jet_muonMultiplicity;
+  inputs.matrix<float>()(0, v) = getValueNorm(jet.muonMultiplicity(), means_[v], sigmas_[v]);
+  v = dnn::jet_electronMultiplicity;
+  inputs.matrix<float>()(0, v) = getValueNorm(jet.electronMultiplicity(), means_[v], sigmas_[v]);
+  v = dnn::jet_photonMultiplicity;
+  inputs.matrix<float>()(0, v) = getValueNorm(jet.photonMultiplicity(), means_[v], sigmas_[v]);
+  v = dnn::jet_chargedEmEnergy;
+  inputs.matrix<float>()(0, v) = getValueNorm(jet.chargedEmEnergy(), means_[v], sigmas_[v]);
+  v = dnn::jet_neutralEmEnergy;
+  inputs.matrix<float>()(0, v) = getValueNorm(jet.neutralEmEnergy(), means_[v], sigmas_[v]);
+  v = dnn::jet_chargedHadronEnergy;
+  inputs.matrix<float>()(0, v) = getValueNorm(jet.chargedHadronEnergy(), means_[v], sigmas_[v]);
+  v = dnn::jet_neutralHadronEnergy;
+  inputs.matrix<float>()(0, v) = getValueNorm(jet.neutralHadronEnergy(), means_[v], sigmas_[v]);
+  v = dnn::jet_muonEnergy;
+  inputs.matrix<float>()(0, v) = getValueNorm(jet.muonEnergy(), means_[v], sigmas_[v]);
+  v = dnn::jet_electronEnergy;
+  inputs.matrix<float>()(0, v) = getValueNorm(jet.electronEnergy(), means_[v], sigmas_[v]);
+  v = dnn::jet_photonEnergy;
+  inputs.matrix<float>()(0, v) = getValueNorm(jet.photonEnergy(), means_[v], sigmas_[v]);
+  v = dnn::jet_chargedEmEnergyFraction;
+  inputs.matrix<float>()(0, v) = getValueNorm(jet.chargedEmEnergyFraction(), means_[v], sigmas_[v]);
+  v = dnn::jet_neutralEmEnergyFraction;
+  inputs.matrix<float>()(0, v) = getValueNorm(jet.neutralEmEnergyFraction(), means_[v], sigmas_[v]);
+  v = dnn::jet_chargedHadronEnergyFraction;
+  inputs.matrix<float>()(0, v) = getValueNorm(jet.chargedHadronEnergyFraction(), means_[v], sigmas_[v]);
+  v = dnn::jet_neutralHadronEnergyFraction;
+  inputs.matrix<float>()(0, v) = getValueNorm(jet.neutralHadronEnergyFraction(), means_[v], sigmas_[v]);
+  v = dnn::jet_muonEnergyFraction;
+  inputs.matrix<float>()(0, v) = getValueNorm(jet.muonEnergyFraction(), means_[v], sigmas_[v]);
+  v = dnn::jet_electronEnergyFraction;
+  inputs.matrix<float>()(0, v) = getValueNorm(jet.electronEnergyFraction(), means_[v], sigmas_[v]);
+  v = dnn::jet_photonEnergyFraction;
+  inputs.matrix<float>()(0, v) = getValueNorm(jet.photonEnergyFraction(), means_[v], sigmas_[v]);
+  v = dnn::jet_pfDeepCSVJetTags_probb;
+  inputs.matrix<float>()(0, v) = getValueNorm(jet.bDiscriminator("pfDeepCSVJetTags:probb"), means_[v], sigmas_[v]);
+  v = dnn::jet_pfDeepCSVJetTags_probc;
+  inputs.matrix<float>()(0, v) = getValueNorm(jet.bDiscriminator("pfDeepCSVJetTags:probc"), means_[v], sigmas_[v]);
+  v = dnn::jet_pfDeepCSVJetTags_probudsg;
+  inputs.matrix<float>()(0, v) = getValueNorm(jet.bDiscriminator("pfDeepCSVJetTags:probudsg"), means_[v], sigmas_[v]);
+  v = dnn::jet_pfDeepCSVJetTags_probbb;
+  inputs.matrix<float>()(0, v) = getValueNorm(jet.bDiscriminator("pfDeepCSVJetTags:probbb"), means_[v], sigmas_[v]);
+}
+
+void DeepDiTau::createChargedHadronBlockInputs_v2(const pat::Jet& jet) {
+  tensorflow::Tensor& inputs = inputTensors_.at(kChargedHadron_).second;
+  inputs.flat<float>().setZero();
+  namespace dnnj = ditauInputs_2017_v2::JetBlockInputs;
+  namespace dnn = ditauInputs_2017_v2::ChargedHadronBlockInputs;                                                                                              
+  // in the means list, the charged hadron are after the jet
+  int n = dnnj::NumberOfInputs;
+  int v;
+  int idh = 0;
+  for (size_t d=0; d<jet.numberOfDaughters(); d++) {
+    // limit the number of daughters                                                                                                                            
+    if (idh>=ditauInputs_2017_v2::NumberOfChargedHadrons) continue;
+    const pat::PackedCandidate * dau = (pat::PackedCandidate*)jet.daughter(d);
+    // require charged hadron                                                                                                                                   
+    if ((std::abs(dau->pdgId())==13) || (std::abs(dau->pdgId())==11) || (std::abs(dau->pdgId())==22) || (std::abs(dau->charge())==0)) continue;
+    v = dnn::charged_hadron_pt;
+    inputs.tensor<float,3>()(0, v, idh) = getValueNorm(dau->pt()/jet.pt(), means_[v+n], sigmas_[v+n]);
+    v = dnn::charged_hadron_eta;
+    inputs.tensor<float,3>()(0, v, idh) = getValueNorm(dau->eta()-jet.eta(), means_[v+n], sigmas_[v+n]);
+    v = dnn::charged_hadron_phi;
+    inputs.tensor<float,3>()(0, v, idh) = getValueNorm(dau->phi()-jet.phi(), means_[v+n], sigmas_[v+n]);
+    v = dnn::charged_hadron_charge;
+    inputs.tensor<float,3>()(0, v, idh) = getValueNorm(dau->charge(), means_[v+n], sigmas_[v+n]);
+    v = dnn::charged_hadron_etaAtVtx;
+    inputs.tensor<float,3>()(0, v, idh) = getValueNorm(dau->etaAtVtx()-jet.eta(), means_[v+n], sigmas_[v+n]);
+    v = dnn::charged_hadron_phiAtVtx;
+    inputs.tensor<float,3>()(0, v, idh) = getValueNorm(dau->phiAtVtx()-jet.phi(), means_[v+n], sigmas_[v+n]);
+    v = dnn::charged_hadron_vx;
+    inputs.tensor<float,3>()(0, v, idh) = getValueNorm(dau->vx(), means_[v+n], sigmas_[v+n]);
+    v = dnn::charged_hadron_vy;
+    inputs.tensor<float,3>()(0, v, idh) = getValueNorm(dau->vy(), means_[v+n], sigmas_[v+n]);
+    v = dnn::charged_hadron_vz;
+    inputs.tensor<float,3>()(0, v, idh) = getValueNorm(dau->vz(), means_[v+n], sigmas_[v+n]);
+    v = dnn::charged_hadron_dxy;
+    inputs.tensor<float,3>()(0, v, idh) = getValueNorm(dau->dxy(), means_[v+n], sigmas_[v+n]);
+    v = dnn::charged_hadron_dz;
+    inputs.tensor<float,3>()(0, v, idh) = getValueNorm(dau->dz(), means_[v+n], sigmas_[v+n]);
+    v = dnn::charged_hadron_pixelLayersWithMeasurement;
+    inputs.tensor<float,3>()(0, v, idh) = getValueNorm(dau->pixelLayersWithMeasurement(), means_[v+n], sigmas_[v+n]);
+    v = dnn::charged_hadron_stripLayersWithMeasurement;
+    inputs.tensor<float,3>()(0, v, idh) = getValueNorm(dau->stripLayersWithMeasurement(), means_[v+n], sigmas_[v+n]);
+    v = dnn::charged_hadron_trackerLayersWithMeasurement;
+    inputs.tensor<float,3>()(0, v, idh) = getValueNorm(dau->trackerLayersWithMeasurement(), means_[v+n], sigmas_[v+n]);
+    v = dnn::charged_hadron_trackHighPurity;
+    inputs.tensor<float,3>()(0, v, idh) = getValueNorm(dau->trackHighPurity(), means_[v+n], sigmas_[v+n]);
+    v = dnn::charged_hadron_puppiWeight;
+    inputs.tensor<float,3>()(0, v, idh) = getValueNorm(dau->puppiWeight(), means_[v+n], sigmas_[v+n]);
+    v = dnn::charged_hadron_puppiWeightNoLep;
+    inputs.tensor<float,3>()(0, v, idh) = getValueNorm(dau->puppiWeightNoLep(), means_[v+n], sigmas_[v+n]);
+    v = dnn::charged_hadron_isIsolatedChargedHadron;
+    inputs.tensor<float,3>()(0, v, idh) = getValueNorm(dau->isIsolatedChargedHadron(), means_[v+n], sigmas_[v+n]);
+    idh++;
+  }
+
+}
+
+void DeepDiTau::createNeutralHadronBlockInputs_v2(const pat::Jet& jet) {
+  tensorflow::Tensor& inputs = inputTensors_.at(kNeutralHadron_).second;
+  inputs.flat<float>().setZero();
+
+  namespace dnnj = ditauInputs_2017_v2::JetBlockInputs;
+  namespace dnnch = ditauInputs_2017_v2::ChargedHadronBlockInputs;
+  namespace dnn = ditauInputs_2017_v2::NeutralHadronBlockInputs;
+  // in the means list, the neutral hadron are after the jet and charged hadron                                                                                 
+  int n = dnnj::NumberOfInputs + dnnch::NumberOfInputs;
+  int v;
+  int idh = 0;
+  for (size_t d=0; d<jet.numberOfDaughters(); d++) {
+    // limit the number of daughters                                                                                                                            
+    if (idh>=ditauInputs_2017_v2::NumberOfNeutralHadrons) continue;
+    const pat::PackedCandidate * dau = (pat::PackedCandidate*)jet.daughter(d);
+    // require neutral hadron                                                                                                                                   
+    if ((std::abs(dau->pdgId())==13) || (std::abs(dau->pdgId())==11) || (std::abs(dau->pdgId())==22) || (std::abs(dau->charge())>0)) continue;
+    v = dnn::neutral_hadron_pt;
+    inputs.tensor<float,3>()(0, v, idh) = getValueNorm(dau->pt()/jet.pt(), means_[v+n], sigmas_[v+n]);
+    v = dnn::neutral_hadron_eta;
+    inputs.tensor<float,3>()(0, v, idh) = getValueNorm(dau->eta()-jet.eta(), means_[v+n], sigmas_[v+n]);
+    v = dnn::neutral_hadron_phi;
+    inputs.tensor<float,3>()(0, v, idh) = getValueNorm(dau->phi()-jet.phi(), means_[v+n], sigmas_[v+n]);
+    v = dnn::neutral_hadron_puppiWeight;
+    inputs.tensor<float,3>()(0, v, idh) = getValueNorm(dau->puppiWeight(), means_[v+n], sigmas_[v+n]);
+    v = dnn::neutral_hadron_puppiWeightNoLep;
+    inputs.tensor<float,3>()(0, v, idh) = getValueNorm(dau->puppiWeightNoLep(), means_[v+n], sigmas_[v+n]);
+    idh++;
+  }
+
+}
+
+void DeepDiTau::createPhotonBlockInputs_v2(const pat::Jet& jet) {
+  tensorflow::Tensor& inputs = inputTensors_.at(kPhoton_).second;
+  inputs.flat<float>().setZero();
+
+  namespace dnnj = ditauInputs_2017_v2::JetBlockInputs;
+  namespace dnnch = ditauInputs_2017_v2::ChargedHadronBlockInputs;
+  namespace dnnnh = ditauInputs_2017_v2::NeutralHadronBlockInputs;
+  namespace dnn = ditauInputs_2017_v2::PhotonBlockInputs;
+  // in the means list, the photon are after the jet, charged hadron, neutral hadron, muon, photon
+  int n = dnnj::NumberOfInputs + dnnch::NumberOfInputs + dnnnh::NumberOfInputs;
+  int v;
+  int idh = 0;
+  for (size_t d=0; d<jet.numberOfDaughters(); d++) {
+    // limit the number of daughters
+    if (idh>=ditauInputs_2017_v2::NumberOfPhotons) continue;
+    const pat::PackedCandidate * dau = (pat::PackedCandidate*)jet.daughter(d);
+    // require photon
+    if (std::abs(dau->pdgId())!=22) continue;
+    v = dnn::photon_pt;
+    inputs.tensor<float,3>()(0, v, idh) = getValueNorm(dau->pt()/jet.pt(), means_[v+n], sigmas_[v+n]);
+    v = dnn::photon_eta;
+    inputs.tensor<float,3>()(0, v, idh) = getValueNorm(dau->eta()-jet.eta(), means_[v+n], sigmas_[v+n]);
+    v = dnn::photon_phi;
+    inputs.tensor<float,3>()(0, v, idh) = getValueNorm(dau->phi()-jet.phi(), means_[v+n], sigmas_[v+n]);
+    v = dnn::photon_puppiWeight;
+    inputs.tensor<float,3>()(0, v, idh) = getValueNorm(dau->puppiWeight(), means_[v+n], sigmas_[v+n]);
+    v = dnn::photon_puppiWeightNoLep;
+    inputs.tensor<float,3>()(0, v, idh) = getValueNorm(dau->puppiWeightNoLep(), means_[v+n], sigmas_[v+n]);
+    v = dnn::photon_isGoodEgamma;
+    inputs.tensor<float,3>()(0, v, idh) = getValueNorm(dau->isGoodEgamma(), means_[v+n], sigmas_[v+n]);
+    idh++;
+  }
+}
