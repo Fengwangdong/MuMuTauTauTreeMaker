@@ -440,7 +440,7 @@ tensorflow::Tensor DeepDiTau::getPrediction(const pat::Jet& jet) {
     }
   } // ditau2017MDv1
 
-  if (name_=="ditau2017v2") {
+  else if (name_=="ditau2017v2") {
     getPrediction_2017_v2(jet, pred_vector);
     prediction = tensorflow::Tensor(tensorflow::DT_FLOAT, {1, ditauInputs_2017_v2::NumberOfOutputs});
     for (int k = 0; k < ditauInputs_2017_v2::NumberOfOutputs; ++k) {
@@ -466,6 +466,8 @@ tensorflow::Tensor DeepDiTau::getPrediction(const pat::Jet& jet) {
   } // ditau2017MDv2
 
   else {
+    throw cms::Exception("DeepDiTau")
+      << "weird name = " << name_;
     prediction = tensorflow::Tensor(tensorflow::DT_FLOAT, {1, empty::NumberOfOutputs});
     prediction.matrix<float>().setZero();
     prediction.matrix<float>()(0, 2) = -1.0; // hard coded for now
