@@ -17,27 +17,27 @@ process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 from Configuration.AlCa.GlobalTag import GlobalTag
 
 ########## Please specify if you are running on data (0) or MC (1) in the command line: #########################
-########### eg: cmsRun runDiMuDiTau_2018_cfg.py isMC=1 ###############
+########### eg: cmsRun runDiMuDiTau_cfg.py isMC=1 ###############
 ##########################################################################
 if options.isMC == 1:
     print (" ****** we will run on sample of: MC ******")
     if options.era == '2016preVFP':
-        process.GlobalTag.globaltag = '106X_mcRun2_asymptotic_preVFP_v9'
+        process.GlobalTag.globaltag = '106X_mcRun2_asymptotic_preVFP_v11'
 
     elif options.era == '2016postVFP':
-        process.GlobalTag.globaltag = '106X_mcRun2_asymptotic_preVFP_v15'
+        process.GlobalTag.globaltag = '106X_mcRun2_asymptotic_v17'
 
     elif options.era == '2017':
-        process.GlobalTag.globaltag = '106X_mc2017_realistic_v8'
+        process.GlobalTag.globaltag = '106X_mc2017_realistic_v9'
 
     else:
-        process.GlobalTag.globaltag = '106X_upgrade2018_realistic_v15_L1v1'
+        process.GlobalTag.globaltag = '106X_upgrade2018_realistic_v16_L1v1'
 
     process.load("MuMuTauTauTreeMaker.MuTauTreelizer.DiMuDiTauSelectorMC_cfi")
 
 else:
     print (" ****** we will run on sample of: data ******")
-    process.GlobalTag.globaltag = '106X_dataRun2_v32'
+    process.GlobalTag.globaltag = '106X_dataRun2_v35'
     process.load("MuMuTauTauTreeMaker.MuTauTreelizer.DiMuDiTauSelector_cfi")
 
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
