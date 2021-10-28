@@ -82,9 +82,15 @@ class DeepDiTau {
     void createElectronBlockInputs(const pat::Jet&);
     void createPhotonBlockInputs(const pat::Jet&);
     void createMassInput(const pat::Jet&);
+    void createJetBlockInputs_v2(const pat::Jet&);
+    void createChargedHadronBlockInputs_v2(const pat::Jet&);
+    void createNeutralHadronBlockInputs_v2(const pat::Jet&);
+    void createPhotonBlockInputs_v2(const pat::Jet&);
     tensorflow::Tensor getPrediction(const pat::Jet&);
     void getPrediction_2017_v1(const pat::Jet&, std::vector<tensorflow::Tensor>&);
     void getPrediction_2017_md_v1(const pat::Jet&, std::vector<tensorflow::Tensor>&);
+    void getPrediction_2017_v2(const pat::Jet&, std::vector<tensorflow::Tensor>&);
+    void getPrediction_2017_md_v2(const pat::Jet&, std::vector<tensorflow::Tensor>&);
 
   protected:
     bool isConfigured_;

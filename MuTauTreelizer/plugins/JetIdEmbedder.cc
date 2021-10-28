@@ -16,6 +16,8 @@ private:
   edm::EDGetTokenT<edm::View<pat::Jet> > srcToken_;
   edm::EDGetTokenT<edm::ValueMap<float>> ditau2017v1Token_;
   edm::EDGetTokenT<edm::ValueMap<float>> ditau2017MDv1Token_;
+  edm::EDGetTokenT<edm::ValueMap<float>> ditau2017v2Token_;
+  edm::EDGetTokenT<edm::ValueMap<float>> ditau2017MDv2Token_;
 };
 
 JetIdEmbedder::JetIdEmbedder(const edm::ParameterSet& pset):
@@ -24,6 +26,8 @@ JetIdEmbedder::JetIdEmbedder(const edm::ParameterSet& pset):
 {
   if (pset.exists("ditau2017v1")) { ditau2017v1Token_ = consumes<edm::ValueMap<float> >(pset.getParameter<edm::InputTag>("ditau2017v1")); }
   if (pset.exists("ditau2017MDv1")) { ditau2017MDv1Token_ = consumes<edm::ValueMap<float> >(pset.getParameter<edm::InputTag>("ditau2017MDv1")); }
+  if (pset.exists("ditau2017v2")) { ditau2017v2Token_ = consumes<edm::ValueMap<float> >(pset.getParameter<edm::InputTag>("ditau2017v2")); }
+  if (pset.exists("ditau2017MDv2")) { ditau2017MDv2Token_ = consumes<edm::ValueMap<float> >(pset.getParameter<edm::InputTag>("ditau2017MDv2")); }
   produces<pat::JetCollection>();
 }
 
@@ -38,6 +42,12 @@ void JetIdEmbedder::produce(edm::Event& evt, const edm::EventSetup& es) {
 
   edm::Handle<edm::ValueMap<float> > ditau2017MDv1;
   bool ditau2017MDv1Valid = evt.getByToken(ditau2017MDv1Token_, ditau2017MDv1);
+
+  edm::Handle<edm::ValueMap<float> > ditau2017v2;
+  bool ditau2017v2Valid = evt.getByToken(ditau2017v2Token_, ditau2017v2);
+
+  edm::Handle<edm::ValueMap<float> > ditau2017MDv2;
+  bool ditau2017MDv2Valid = evt.getByToken(ditau2017MDv2Token_, ditau2017MDv2);
 
   output->reserve(input->size());
   for (size_t i = 0; i < input->size(); ++i) {
@@ -158,11 +168,17 @@ void JetIdEmbedder::produce(edm::Event& evt, const edm::EventSetup& es) {
     jet.addUserInt("puID", passPU);
     float ditau2017v1Value = 0;
     float ditau2017MDv1Value = 0;
+    float ditau2017v2Value = 0;
+    float ditau2017MDv2Value = 0;
     edm::Ref<edm::View<pat::Jet> > jRef(input,i);
     if (ditau2017v1Valid) ditau2017v1Value = (*ditau2017v1)[jRef];
     if (ditau2017MDv1Valid) ditau2017MDv1Value = (*ditau2017MDv1)[jRef];
+    if (ditau2017v2Valid) ditau2017v2Value = (*ditau2017v2)[jRef];
+    if (ditau2017MDv2Valid) ditau2017MDv2Value = (*ditau2017MDv2)[jRef];
     jet.addUserFloat("ditau2017v1",ditau2017v1Value);
     jet.addUserFloat("ditau2017MDv1",ditau2017MDv1Value);
+    jet.addUserFloat("ditau2017v2",ditau2017v2Value);
+    jet.addUserFloat("ditau2017MDv2",ditau2017MDv2Value);
     output->push_back(jet);
   }
 
