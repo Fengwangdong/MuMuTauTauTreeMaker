@@ -8,34 +8,19 @@ lumiTree = cms.EDAnalyzer("LumiTree",
 
 HLTEle = cms.EDFilter("HLTHighLevel",
         TriggerResultsTag = cms.InputTag("TriggerResults","","HLT"),
-        HLTPaths = cms.vstring("HLT_IsoMu24_v*","HLT_IsoTkMu24_v*","HLT_IsoMu27_v*","HLT_IsoTkMu27_v*"),
+        HLTPaths = cms.vstring("HLT_PFJet500_v*"),
         eventSetupPathsKey = cms.string(''),
         andOr = cms.bool(True), #----- True = OR, False = AND between the HLTPaths
         throw = cms.bool(False), # throw exception on unknown path names
 )
 
-MuonID = cms.EDFilter("MuonID",
+MuonCandSelector = cms.EDFilter("MuonCandSelector",
         muonTag = cms.InputTag('slimmedMuons'),
         muonID = cms.string('loose'),
-        minNumObjsToPassFilter = cms.int32(1),
-)
-
-MuonSelector = cms.EDFilter("MuonSelector",
-        muonTag = cms.InputTag("MuonID"),
         relIsoCutVal = cms.double(-1), # positive number for iso threshold, -1 for ignoring iso
         normalRelIso = cms.bool(True), #True = Iso-mu; False = inverted Iso-mu
         Eta = cms.double(2.5),
         Pt = cms.double(3.0),
-)
-
-TrigMuMatcher = cms.EDFilter("TrigMuMatcher",
-        muonsTag = cms.InputTag('MuonSelector'),
-        bits = cms.InputTag("TriggerResults","","HLT"),
-        triggerObjects = cms.InputTag("slimmedPatTrigger"),
-        trigNames = cms.vstring("HLT_IsoMu24_v","HLT_IsoTkMu24_v","HLT_IsoMu27_v","HLT_IsoTkMu27_v"),
-        dRCut = cms.double(0.15),
-        numberOfTrigMus = cms.int32(1),
-        muPtCut = cms.double(26.0),
 )
 
 ElectronCandSelector = cms.EDFilter("ElectronCandSelector",
@@ -50,40 +35,18 @@ ElectronCandSelector = cms.EDFilter("ElectronCandSelector",
         ptCut = cms.double(3.0),
 )
 
-TauCandSelector = cms.EDFilter("TauCandSelector",
-        tauTag = cms.InputTag('slimmedTausNewID'),
-        tauDiscriminatorTag = cms.vstring('decayModeFindingNewDMs'),
-        passDiscriminator = cms.bool(False),
-        pTMin = cms.double(8.0),
-        etaMax = cms.double(2.4),
+TrigJetMatcher = cms.EDFilter("TrigJetMatcher",
+        jetsTag = cms.InputTag('slimmedJets'),
+        bits = cms.InputTag("TriggerResults","","HLT"),
+        triggerObjects = cms.InputTag("slimmedPatTrigger"),
+        trigNames = cms.vstring("HLT_PFJet500_v"),
+        dRCut = cms.double(0.15),
+        jetPtCut = cms.double(502.0),
 )
 
-TauMuonCleanedCandSelector = cms.EDFilter("TauCandSelector",
-        tauTag = cms.InputTag('slimmedTausMuonCleanedNewID'),
-        tauDiscriminatorTag = cms.vstring('decayModeFindingNewDMs'),
-        passDiscriminator = cms.bool(False),
-        pTMin = cms.double(8.0),
-        etaMax = cms.double(2.4),
-)
-
-TauElectronCleanedCandSelector = cms.EDFilter("TauCandSelector",
-        tauTag = cms.InputTag('slimmedTausElectronCleanedNewID'),
-        tauDiscriminatorTag = cms.vstring('decayModeFindingNewDMs'),
-        passDiscriminator = cms.bool(False),
-        pTMin = cms.double(8.0),
-        etaMax = cms.double(2.4),
-)
-
-TauBoostedCandSelector = cms.EDFilter("TauCandSelector",
-        tauTag = cms.InputTag('slimmedTausBoostedNewID'),
-        tauDiscriminatorTag = cms.vstring('decayModeFindingNewDMs'),
-        passDiscriminator = cms.bool(False),
-        pTMin = cms.double(8.0),
-        etaMax = cms.double(2.4),
-)
 
 DeepDiTauProducer = cms.EDProducer("DeepDiTauProducer",
-        slimmedJetTag = cms.InputTag('slimmedJets'),
+        slimmedJetTag = cms.InputTag('TrigJetMatcher'),
         DeepDiTauConfiguration = cms.PSet(
             memmapped = cms.bool(False),
             graphDefinitions = cms.VPSet(
@@ -106,13 +69,13 @@ DeepDiTauProducer = cms.EDProducer("DeepDiTauProducer",
                     name = cms.string('ditau2017MDv2'),
                     path = cms.FileInPath('MuMuTauTauTreeMaker/MuTauTreelizer/data/ditau_2017_md_v2.pb'),
                     means = cms.FileInPath('MuMuTauTauTreeMaker/MuTauTreelizer/data/ditau_2017_md_v2_means_sigmas.txt'),
-                ),
             ),
         ),
+    ),
 )
 
 JetIdEmbedder = cms.EDProducer("JetIdEmbedder",
-        slimmedJetTag = cms.InputTag('slimmedJets'),
+        slimmedJetTag = cms.InputTag('TrigJetMatcher'),
         discriminator = cms.string('pileupJetId:fullDiscriminant'),
         ditau2017v1 = cms.InputTag("DeepDiTauProducer","ditau2017v1"),
         ditau2017MDv1 = cms.InputTag("DeepDiTauProducer","ditau2017MDv1"),
@@ -150,20 +113,15 @@ GenTauHadCandSelector = cms.EDFilter("GenTauHadCandSelector",
         ptCut = cms.double(2.5),
 )
 
-DiMuDiTauAnalyzer = cms.EDAnalyzer('DiMuDiTauAnalyzer',
-        MuTag = cms.InputTag("TrigMuMatcher"),
+JetDiTauAnalyzer = cms.EDAnalyzer('JetDiTauAnalyzer',
+        MuTag = cms.InputTag("MuonCandSelector"),
         EleTag = cms.InputTag("ElectronCandSelector"),
-        TauTag = cms.InputTag("TauCandSelector"),
-        TauMuonCleanedTag = cms.InputTag("TauMuonCleanedCandSelector"),
-        TauElectronCleanedTag = cms.InputTag("TauElectronCleanedCandSelector"),
-        TauBoostedTag = cms.InputTag("TauBoostedCandSelector"),
         JetTag = cms.InputTag("JetIdEmbedder"),
         MetTag = cms.InputTag("slimmedMETs"),
         VertexTag = cms.InputTag("offlineSlimmedPrimaryVertices"),
         rhoTag = cms.InputTag("fixedGridRhoAll"),
         effAreasConfigFile = cms.FileInPath("MuMuTauTauTreeMaker/MuTauTreelizer/data/effAreaElectrons_cone03_pfNeuHadronsAndPhotons_94X.txt"),
         isMC = cms.bool(True),
-        numberOfTrigMus = cms.int32(1),
         GenMuTag = cms.InputTag('GenMuonCandSelector'),
         GenEleTag = cms.InputTag('GenElectronCandSelector'),
         GenTauMuTag = cms.InputTag('GenTauMuCandSelector'),

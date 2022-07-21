@@ -1576,7 +1576,7 @@ DiMuDiTauAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
            recoJetCSV.push_back(iJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags"));
            recoJetDeepDiTauValuev1.push_back(iJet->userFloat("ditau2017v1"));
            recoJetDeepDiTauValueMDv1.push_back(iJet->userFloat("ditau2017MDv1"));
-	   recoJetDeepDiTauValuev2.push_back(iJet->userFloat("ditau2017v2"));
+           recoJetDeepDiTauValuev2.push_back(iJet->userFloat("ditau2017v2"));
            recoJetDeepDiTauValueMDv2.push_back(iJet->userFloat("ditau2017MDv2"));
            recoJetIdLoose.push_back(iJet->userInt("idLoose"));
            recoJetIdTight.push_back(iJet->userInt("idTight"));

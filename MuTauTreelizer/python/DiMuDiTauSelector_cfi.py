@@ -106,7 +106,7 @@ DeepDiTauProducer = cms.EDProducer("DeepDiTauProducer",
                     name = cms.string('ditau2017MDv2'),
                     path = cms.FileInPath('MuMuTauTauTreeMaker/MuTauTreelizer/data/ditau_2017_md_v2.pb'),
                     means = cms.FileInPath('MuMuTauTauTreeMaker/MuTauTreelizer/data/ditau_2017_md_v2_means_sigmas.txt'),
-            ),
+                ),
         ),
     ),
 )
