@@ -96,6 +96,8 @@ class DiMuDiTauAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>
       edm::EDGetTokenT<edm::View<reco::GenParticle>> GenTauEleTag;
       edm::EDGetTokenT<edm::View<reco::GenParticle>> GenTauHadTag;
 
+      edm::EDGetTokenT<float> prefweight_token;
+
       TTree *objectTree;
       // --- below is the vectors of object variables ---
       
@@ -412,6 +414,7 @@ class DiMuDiTauAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>
       vector<int> recoJetIdTight;
       vector<int> recoJetIdTightLepVeto;
       vector<int> recoJetIdPileUp;
+      vector<int> recoJetHadronFlavor;
       
       // --- reconstructed MET ---
       vector<float> recoMET;
@@ -512,6 +515,7 @@ DiMuDiTauAnalyzer::DiMuDiTauAnalyzer(const edm::ParameterSet& iConfig):
    usesResource("TFileService");
    isMC = iConfig.getParameter<bool>("isMC");
    numberOfTrigMus = iConfig.getParameter<int>("numberOfTrigMus");
+   prefweight_token = consumes<float>(edm::InputTag("prefiringweight:nonPrefiringProb"));
 }
 
 
@@ -585,6 +589,9 @@ DiMuDiTauAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
 
        edm::Handle<edm::View<PileupSummaryInfo>> pileup_info;
        iEvent.getByToken(PileupTag, pileup_info);
+
+       edm::Handle<float> theprefweight;
+       iEvent.getByToken(prefweight_token, theprefweight);
 
        if (pGenMu->size() > 0)
        {
@@ -721,7 +728,7 @@ DiMuDiTauAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
 
        if (gen_ev_info.isValid())
        {
-           genEventWeight = gen_ev_info->weight();
+           genEventWeight = (gen_ev_info->weight()) * (*theprefweight);
        } // end if gen_ev_info.isValid()
 
        if (pileup_info.isValid())
@@ -1572,8 +1579,8 @@ DiMuDiTauAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
            recoJetEnergy.push_back(iJet->energy());
            // --- btag for jet ---
            // reference: https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookMiniAOD2017#Jets
-           // https://twiki.cern.ch/twiki/bin/viewauth/CMS/BtagRecommendation80XReReco#Supported_Algorithms_and_Operati
-           recoJetCSV.push_back(iJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags"));
+           // https://twiki.cern.ch/twiki/bin/view/CMS/BtagRecommendation#UltraLegacy_scale_factor_uncerta
+           recoJetCSV.push_back(iJet->bDiscriminator("pfDeepFlavourJetTags:probb + pfDeepFlavourJetTags:probbb + pfDeepFlavourJetTags:problepb"));
            recoJetDeepDiTauValuev1.push_back(iJet->userFloat("ditau2017v1"));
            recoJetDeepDiTauValueMDv1.push_back(iJet->userFloat("ditau2017MDv1"));
            recoJetDeepDiTauValuev2.push_back(iJet->userFloat("ditau2017v2"));
@@ -1582,6 +1589,7 @@ DiMuDiTauAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
            recoJetIdTight.push_back(iJet->userInt("idTight"));
            recoJetIdTightLepVeto.push_back(iJet->userInt("idTightLepVeto"));
            recoJetIdPileUp.push_back(iJet->userInt("puID"));
+           recoJetHadronFlavor.push_back(iJet->hadronFlavour());
        } // end for loop on jets
    } // end if pJet->size()>0
 

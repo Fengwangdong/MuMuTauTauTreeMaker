@@ -19,19 +19,30 @@ from Configuration.AlCa.GlobalTag import GlobalTag
 ########## Please specify if you are running on data (0) or MC (1) in the command line: #########################
 ########### eg: cmsRun runDiMuDiTau_cfg.py isMC=1 ###############
 ##########################################################################
+DataEraECALStringForL1PreFiring = ""
+DataEraMuonStringForL1PreFiring = ""
+
 if options.isMC == 1:
     print (" ****** we will run on sample of: MC ******")
     if options.era == '2016preVFP':
         process.GlobalTag.globaltag = '106X_mcRun2_asymptotic_preVFP_v11'
+        DataEraECALStringForL1PreFiring = "UL2016preVFP"
+        DataEraMuonStringForL1PreFiring = "2016preVFP"
 
     elif options.era == '2016postVFP':
         process.GlobalTag.globaltag = '106X_mcRun2_asymptotic_v17'
+        DataEraECALStringForL1PreFiring = "UL2016postVFP"
+        DataEraMuonStringForL1PreFiring = "2016postVFP"
 
     elif options.era == '2017':
         process.GlobalTag.globaltag = '106X_mc2017_realistic_v9'
+        DataEraECALStringForL1PreFiring = "UL2017BtoF"
+        DataEraMuonStringForL1PreFiring = "20172018"
 
     else:
         process.GlobalTag.globaltag = '106X_upgrade2018_realistic_v16_L1v1'
+        DataEraECALStringForL1PreFiring = "None"
+        DataEraMuonStringForL1PreFiring = "20172018"
 
     process.load("MuMuTauTauTreeMaker.MuTauTreelizer.DiMuDiTauSelectorMC_cfi")
 
@@ -111,6 +122,16 @@ elif options.era == '2017':
 else:
     setupEgammaPostRecoSeq(process, era='2018-UL')
 ###########################################################
+from PhysicsTools.PatUtils.l1PrefiringWeightProducer_cfi import l1PrefiringWeightProducer
+process.prefiringweight = l1PrefiringWeightProducer.clone(
+        TheJets = cms.InputTag("slimmedJets"), #this should be the slimmedJets collection with up to date JECs
+        DataEraECAL = cms.string(DataEraECALStringForL1PreFiring), #Use 2016BtoH for 2016
+        DataEraMuon = cms.string(DataEraMuonStringForL1PreFiring), #Use 2016 for 2016
+        UseJetEMPt = cms.bool(False),
+        PrefiringRateSystematicUnctyECAL = cms.double(0.2),
+        PrefiringRateSystematicUnctyMuon = cms.double(0.2)
+        )
+###########################################################
 
 if options.isMC == 1:
     process.treelizer = cms.Sequence(
@@ -136,6 +157,7 @@ if options.isMC == 1:
             process.GenTauMuCandSelector*
             process.GenTauEleCandSelector*
             process.GenTauHadCandSelector*
+            process.prefiringweight*
             process.DiMuDiTauAnalyzer
     )
 
@@ -162,6 +184,7 @@ else:
             process.TauBoostedCandSelector*
             process.DeepDiTauProducer*
             process.JetIdEmbedder*
+            process.prefiringweight*
             process.DiMuDiTauAnalyzer
     )
 
