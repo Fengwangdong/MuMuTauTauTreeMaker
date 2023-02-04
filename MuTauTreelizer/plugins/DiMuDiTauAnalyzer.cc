@@ -1918,6 +1918,7 @@ DiMuDiTauAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
    recoJetIdTight.clear();
    recoJetIdTightLepVeto.clear();
    recoJetIdPileUp.clear();
+   recoJetHadronFlavor.clear();
    
    // --- reconstructed MET ---
    recoMET.clear();
@@ -2403,6 +2404,7 @@ DiMuDiTauAnalyzer::beginJob()
     objectTree->Branch("recoJetIdTight", &recoJetIdTight);
     objectTree->Branch("recoJetIdTightLepVeto", &recoJetIdTightLepVeto);
     objectTree->Branch("recoJetIdPileUp", &recoJetIdPileUp);
+    objectTree->Branch("recoJetHadronFlavor", &recoJetHadronFlavor);
     
     objectTree->Branch("recoMET", &recoMET);
     objectTree->Branch("recoMETPhi", &recoMETPhi);
