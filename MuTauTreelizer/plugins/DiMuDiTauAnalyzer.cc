@@ -97,6 +97,8 @@ class DiMuDiTauAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>
       edm::EDGetTokenT<edm::View<reco::GenParticle>> GenTauHadTag;
 
       edm::EDGetTokenT<float> prefweight_token;
+      edm::EDGetTokenT<float> prefweightup_token;
+      edm::EDGetTokenT<float> prefweightdown_token;
 
       TTree *objectTree;
       // --- below is the vectors of object variables ---
@@ -478,6 +480,9 @@ class DiMuDiTauAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>
 
       // --- event weight for MC ---
       float genEventWeight; 
+      float prefWeight;
+      float prefWeightUp;
+      float prefWeightDn;
 };
 
 //
@@ -516,6 +521,8 @@ DiMuDiTauAnalyzer::DiMuDiTauAnalyzer(const edm::ParameterSet& iConfig):
    isMC = iConfig.getParameter<bool>("isMC");
    numberOfTrigMus = iConfig.getParameter<int>("numberOfTrigMus");
    prefweight_token = consumes<float>(edm::InputTag("prefiringweight:nonPrefiringProb"));
+   prefweightup_token = consumes<float>(edm::InputTag("prefiringweight:nonPrefiringProbUp"));
+   prefweightdown_token = consumes<float>(edm::InputTag("prefiringweight:nonPrefiringProbDown"));
 }
 
 
@@ -592,6 +599,12 @@ DiMuDiTauAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
 
        edm::Handle<float> theprefweight;
        iEvent.getByToken(prefweight_token, theprefweight);
+
+       edm::Handle<float> theprefweightup;
+       iEvent.getByToken(prefweightup_token, theprefweightup);
+
+       edm::Handle<float> theprefweightdown;
+       iEvent.getByToken(prefweightdown_token, theprefweightdown);
 
        if (pGenMu->size() > 0)
        {
@@ -728,7 +741,10 @@ DiMuDiTauAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
 
        if (gen_ev_info.isValid())
        {
-           genEventWeight = (gen_ev_info->weight()) * (*theprefweight);
+           genEventWeight = gen_ev_info->weight();
+           prefWeight = *theprefweight;
+           prefWeightUp = *theprefweightup;
+           prefWeightDn = *theprefweightdown;
        } // end if gen_ev_info.isValid()
 
        if (pileup_info.isValid())
@@ -2462,6 +2478,9 @@ DiMuDiTauAnalyzer::beginJob()
         objectTree->Branch("recoNPU", &recoNPU, "recoNPU/I");
         objectTree->Branch("trueNInteraction", &trueNInteraction, "trueNInteraction/I");
         objectTree->Branch("genEventWeight", &genEventWeight, "genEventWeight/F");
+        objectTree->Branch("prefWeight", &prefWeight, "prefWeight/F");
+        objectTree->Branch("prefWeightUp", &prefWeightUp, "prefWeightUp/F");
+        objectTree->Branch("prefWeightDn", &prefWeightDn, "prefWeightDn/F");
     } // end if isMC == true
 }
 
